@@ -21,37 +21,40 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 public class AuthorizedZuulFilter extends ZuulFilter {
-	
+
 	@Resource
 	private RestTemplate restTemplate;
 
 	@SuppressWarnings("unused")
 	private static Logger log = LoggerFactory.getLogger(AuthorizedZuulFilter.class);
 
-	
 	/**
-     *  <b>Filter类型</b>
-     *  <li>PRE： 这种过滤器在请求被路由之前调用。我们可利用这种过滤器实现身份验证、在集群中选择请求的微服务、记录调试信息等。
-     *  <li>ROUTING：这种过滤器将请求路由到微服务。这种过滤器用于构建发送给微服务的请求，并使用Apache HttpClient或Netfilx Ribbon请求微服务。
-     *  <li>POST：这种过滤器在路由到微服务以后执行。这种过滤器可用来为响应添加标准的HTTP Header、收集统计信息和指标、将响应从微服务发送给客户端等。
-      * <li>ERROR：在其他阶段发生错误时执行该过滤器。
-     */
+	 * <b>Filter类型</b>
+	 * <li>PRE： 这种过滤器在请求被路由之前调用。我们可利用这种过滤器实现身份验证、在集群中选择请求的微服务、记录调试信息等。
+	 * <li>ROUTING：这种过滤器将请求路由到微服务。这种过滤器用于构建发送给微服务的请求，并使用Apache
+	 * HttpClient或Netfilx Ribbon请求微服务。
+	 * <li>POST：这种过滤器在路由到微服务以后执行。这种过滤器可用来为响应添加标准的HTTP
+	 * Header、收集统计信息和指标、将响应从微服务发送给客户端等。
+	 * <li>ERROR：在其他阶段发生错误时执行该过滤器。
+	 */
 	@Override
 	public String filterType() {
 		return "pre";
 	}
+
 	/**
-     * 优先级
-     * <p>定义filter的顺序，数字越小表示顺序越高，越优先执行
-     */
+	 * 优先级
+	 * <p>
+	 * 定义filter的顺序，数字越小表示顺序越高，越优先执行
+	 */
 	@Override
 	public int filterOrder() {
 		return 1;
 	}
 
-	 /**
-     * 是否启用Filter
-     */
+	/**
+	 * 是否启用Filter
+	 */
 	@Override
 	public boolean shouldFilter() {
 		return true;
@@ -63,29 +66,25 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		RequestContext context = RequestContext.getCurrentContext();
 		// 获取原始Http请求
 		HttpServletRequest request = context.getRequest();
-		//获取用户ID
+		// 获取用户ID
 		String userID = request.getHeader("userID");
-		//获取国家代码
+		// 获取国家代码
 		String countryCode = request.getHeader("countryCode");
-		//获取银行代码
+		// 获取银行代码
 		String clearingCode = request.getHeader("clearingCode");
-		//获取分行代码
+		// 获取分行代码
 		String branchCode = request.getHeader("branchCode");
-		// 获取全部参数
-		//System.out.println(""+request.getMethod()+"==="+request.getRequestURL().toString());
-		if (!StringUtils.isEmpty(userID) 
-			&& !StringUtils.isEmpty(countryCode)
-			&& !StringUtils.isEmpty(clearingCode)
-			&& !StringUtils.isEmpty(branchCode)
-		   ) {
+		// System.out.println(""+request.getMethod()+"==="+request.getRequestURL().toString());
+		if (!StringUtils.isEmpty(userID) && !StringUtils.isEmpty(countryCode) && !StringUtils.isEmpty(clearingCode)
+				&& !StringUtils.isEmpty(branchCode)) {
 			PermissionModel permission = new PermissionModel();
 			permission.setUserID(userID);
 			permission.setCountryCode(countryCode);
 			permission.setClearingCode(clearingCode);
 			permission.setBranchCode(branchCode);
-			ResponseEntity<String> result = restTemplate.postForEntity(SysConstant.PERMISSION_URL, PostUtil.getRequestEntity(JSON.toJSONString(permission)),
-					String.class);
-			if(result.getStatusCodeValue()==200 && result.getBody().equals("true")){
+			ResponseEntity<String> result = restTemplate.postForEntity(SysConstant.PERMISSION_URL,
+					PostUtil.getRequestEntity(JSON.toJSONString(permission)), String.class);
+			if (result.getStatusCodeValue() == 200 && result.getBody().equals("true")) {
 				context.setSendZuulResponse(true); // 将请求往后转发
 				context.setResponseStatusCode(200);
 			}
