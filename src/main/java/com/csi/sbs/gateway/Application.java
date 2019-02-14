@@ -1,5 +1,6 @@
 package com.csi.sbs.gateway;
 
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @SpringBootApplication
 @CrossOrigin // 解决跨域请求
 public class Application {
+	
+	
 	
 	@Bean
 	public AuthorizedZuulFilter sessionPreFilter() {

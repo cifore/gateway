@@ -3,18 +3,27 @@ package com.csi.sbs.gateway;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.netflix.zuul.context.RequestContext;
 import com.alibaba.fastjson.JSON;
+import com.csi.sbs.gateway.constant.SysConstant;
+import com.csi.sbs.gateway.model.PermissionModel;
+import com.csi.sbs.gateway.util.PostUtil;
 import com.netflix.zuul.ZuulFilter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
 public class AuthorizedZuulFilter extends ZuulFilter {
+	
+	@Resource
+	private RestTemplate restTemplate;
 
 	@SuppressWarnings("unused")
 	private static Logger log = LoggerFactory.getLogger(AuthorizedZuulFilter.class);
@@ -50,28 +59,45 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 
 	@Override
 	public RequestContext run() {
-		// 获取当前请求上下文，在这个上下文基础上可以做很多事情了。具体自己查看API。
+		// 获取当前请求上下文
 		RequestContext context = RequestContext.getCurrentContext();
-		// 获取原始Htpp请求，有这个对象也可以做很多事情了。自己发挥吧。
+		// 获取原始Http请求
 		HttpServletRequest request = context.getRequest();
 		//获取用户ID
 		String userID = request.getHeader("userID");
 		//获取国家代码
-		String country = request.getHeader("countryCode");
+		String countryCode = request.getHeader("countryCode");
 		//获取银行代码
 		String clearingCode = request.getHeader("clearingCode");
 		//获取分行代码
 		String branchCode = request.getHeader("branchCode");
 		// 获取全部参数
-		System.out.println(""+request.getMethod()+"==="+request.getRequestURL().toString());
+		//System.out.println(""+request.getMethod()+"==="+request.getRequestURL().toString());
 		if (!StringUtils.isEmpty(userID) 
-			&& !StringUtils.isEmpty(country)
+			&& !StringUtils.isEmpty(countryCode)
 			&& !StringUtils.isEmpty(clearingCode)
 			&& !StringUtils.isEmpty(branchCode)
 		   ) {
-			// 这里可以进一步校验token的合法性、时效性，甚至对报文进行校验
-			context.setSendZuulResponse(true); // 将请求往后转发
-			context.setResponseStatusCode(200);
+			PermissionModel permission = new PermissionModel();
+			permission.setUserID(userID);
+			permission.setCountryCode(countryCode);
+			permission.setClearingCode(clearingCode);
+			permission.setBranchCode(branchCode);
+			ResponseEntity<String> result = restTemplate.postForEntity(SysConstant.PERMISSION_URL, PostUtil.getRequestEntity(JSON.toJSONString(permission)),
+					String.class);
+			if(result.getStatusCodeValue()==200 && result.getBody().equals("true")){
+				context.setSendZuulResponse(true); // 将请求往后转发
+				context.setResponseStatusCode(200);
+			}
+			HttpServletResponse response = context.getResponse();
+			response.setHeader("Content-Type", "application/json;charset=UTF-8");
+			context.setSendZuulResponse(false); // 终止转发，返回响应报文
+			context.setResponseStatusCode(400);
+			Map<String, String> responseMap = new HashMap<String, String>();
+			responseMap.put("errorcode", "400");
+			responseMap.put("errormsg", "请求被拦截-无权限");
+			context.setResponseBody(JSON.toJSONString(responseMap));
+			return context;
 		} else {
 			HttpServletResponse response = context.getResponse();
 			response.setHeader("Content-Type", "application/json;charset=UTF-8");
@@ -81,10 +107,8 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 			responseMap.put("errorcode", "400");
 			responseMap.put("errormsg", "请求被拦截-请求头参数不全");
 			context.setResponseBody(JSON.toJSONString(responseMap));
-			
 			return context;
 		}
-		return null;
 	}
 
 }
