@@ -67,6 +67,8 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		RequestContext context = RequestContext.getCurrentContext();
 		// 获取原始Http请求
 		HttpServletRequest request = context.getRequest();
+		
+		
 		// 获取用户ID
 		String userID = request.getHeader("userID");
 		// 获取国家代码
@@ -98,6 +100,7 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 			}else{
 				HttpServletResponse response = context.getResponse();
 				response.setHeader("Content-Type", "application/json;charset=UTF-8");
+				//response.setHeader("Access-Control-Allow-Headers","x-requested-with,content-type");
 				context.setSendZuulResponse(false); // 终止转发，返回响应报文
 				context.setResponseStatusCode(400);
 				Map<String, String> responseMap = new HashMap<String, String>();
