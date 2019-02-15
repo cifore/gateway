@@ -62,10 +62,14 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 
 	@Override
 	public RequestContext run() {
+		
+		
 		// 获取当前请求上下文
 		RequestContext context = RequestContext.getCurrentContext();
 		// 获取原始Http请求
 		HttpServletRequest request = context.getRequest();
+		
+		
 		// 获取用户ID
 		String userID = request.getHeader("userID");
 		// 获取国家代码
@@ -87,6 +91,7 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 			if (result.getStatusCodeValue() == 200 && result.getBody().equals("true")) {
 				context.setSendZuulResponse(true); // 将请求往后转发
 				context.setResponseStatusCode(200);
+				return context;
 			}
 			HttpServletResponse response = context.getResponse();
 			response.setHeader("Content-Type", "application/json;charset=UTF-8");
@@ -99,6 +104,13 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 			return context;
 		} else {
 			HttpServletResponse response = context.getResponse();
+			if (request.getMethod().equals("OPTIONS")) {
+				response.setStatus(HttpServletResponse.SC_OK);
+				response.setHeader("Content-Type", "application/json;charset=UTF-8");
+				context.setSendZuulResponse(true); // 将请求往后转发
+				context.setResponseStatusCode(200);
+				return context;
+	        }
 			response.setHeader("Content-Type", "application/json;charset=UTF-8");
 			context.setSendZuulResponse(false); // 终止转发，返回响应报文
 			context.setResponseStatusCode(400);
