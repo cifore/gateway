@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @EnableZuulProxy
 @EnableEurekaClient
 @SpringBootApplication
-@CrossOrigin // 解决跨域请求
+@CrossOrigin// 解决跨域请求
 public class Application {
 	
 	
