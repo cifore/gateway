@@ -63,13 +63,16 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 
 	@Override
 	public RequestContext run() {
-		
-		
 		// 获取当前请求上下文
 		RequestContext context = RequestContext.getCurrentContext();
 		// 获取原始Http请求
 		HttpServletRequest request = context.getRequest();
-		
+		String path = request.getServletPath();
+		if(SysConstant.getNoNeedHeaderUrl().contains(path)){
+			context.setSendZuulResponse(true); // 将请求往后转发
+			context.setResponseStatusCode(200);
+			return context;
+		}
 		
 		// 获取用户ID
 		String userID = request.getHeader("userID");
@@ -79,7 +82,7 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		String clearingCode = request.getHeader("clearingCode");
 		// 获取分行代码
 		String branchCode = request.getHeader("branchCode");
-		// System.out.println(""+request.getMethod()+"==="+request.getRequestURL().toString());
+		System.out.println(""+request.getMethod()+"==="+request.getRequestURL().toString());
 		if (!StringUtils.isEmpty(userID)) {
 			PermissionModel permission = new PermissionModel();
 			permission.setUserID(userID);
