@@ -18,4 +18,11 @@ public class SysConstant {
 		   
 		   return list;
 	   }
+	   //客户登录的URL
+	   public static List<String> getLoginUrl(){
+		   List<String> list = new ArrayList<String>();
+		   list.add("/sysadmin/sysadmin/login/login");
+		   
+		   return list;
+	   }
 }

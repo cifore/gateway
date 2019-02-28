@@ -8,8 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.netflix.zuul.context.RequestContext;
+
+import io.jsonwebtoken.Claims;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.csi.sbs.common.business.util.JwtTokenProviderUtil;
 import com.csi.sbs.gateway.constant.SysConstant;
 import com.csi.sbs.gateway.model.PermissionModel;
 import com.csi.sbs.gateway.util.PostUtil;
@@ -25,6 +29,8 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 
 	@Resource
 	private RestTemplate restTemplate;
+	
+	private JwtTokenProviderUtil jwtToken = new JwtTokenProviderUtil("123456");
 
 	@SuppressWarnings("unused")
 	private static Logger log = LoggerFactory.getLogger(AuthorizedZuulFilter.class);
@@ -68,6 +74,7 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		// 获取原始Http请求
 		HttpServletRequest request = context.getRequest();
 		String path = request.getServletPath();
+		//忽略不需要请求头的请求
 		if(SysConstant.getNoNeedHeaderUrl().contains(path)){
 			context.setSendZuulResponse(true); // 将请求往后转发
 			context.setResponseStatusCode(200);
@@ -82,7 +89,40 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		String clearingCode = request.getHeader("clearingCode");
 		// 获取分行代码
 		String branchCode = request.getHeader("branchCode");
-		System.out.println(""+request.getMethod()+"==="+request.getRequestURL().toString());
+		// 获取客户身份证号码
+		String customerID = request.getHeader("customerID");
+		// 获取token
+		String token = request.getHeader("token");
+		
+		//校验访问接口时是否登录
+		if(!SysConstant.getLoginUrl().contains(path)){
+			if(StringUtils.isEmpty(customerID) || StringUtils.isEmpty(token)){
+				HttpServletResponse response = context.getResponse();
+				response.setHeader("Content-Type", "application/json;charset=UTF-8");
+				//response.setHeader("Access-Control-Allow-Headers","x-requested-with,content-type");
+				context.setSendZuulResponse(false); // 终止转发，返回响应报文
+				context.setResponseStatusCode(400);
+				Map<String, String> responseMap = new HashMap<String, String>();
+				responseMap.put("errorcode", "400");
+				responseMap.put("errormsg", "请求被拦截-没有登录");
+				context.setResponseBody(JSON.toJSONString(responseMap));
+				return context;
+			}
+			//校验token所包含的customerID 是否是传进来的customerID
+			Claims userClaims = jwtToken.parseToken(token);
+			if(!customerID.equals(userClaims.get("customerID"))){
+				HttpServletResponse response = context.getResponse();
+				response.setHeader("Content-Type", "application/json;charset=UTF-8");
+				//response.setHeader("Access-Control-Allow-Headers","x-requested-with,content-type");
+				context.setSendZuulResponse(false); // 终止转发，返回响应报文
+				context.setResponseStatusCode(400);
+				Map<String, String> responseMap = new HashMap<String, String>();
+				responseMap.put("errorcode", "400");
+				responseMap.put("errormsg", "请求被拦截-无权限");
+				context.setResponseBody(JSON.toJSONString(responseMap));
+				return context;
+			}
+		}
 		if (!StringUtils.isEmpty(userID)) {
 			PermissionModel permission = new PermissionModel();
 			permission.setUserID(userID);
@@ -98,6 +138,7 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 				context.addZuulRequestHeader("countryCode", rejsondata.get("countryCode").toString());
 				context.addZuulRequestHeader("clearingCode", rejsondata.get("clearingCode").toString());
 				context.addZuulRequestHeader("branchCode", rejsondata.get("branchCode").toString());
+				context.addZuulRequestHeader("customerID", customerID);
 			
 				context.setSendZuulResponse(true); // 将请求往后转发
 				context.setResponseStatusCode(200);
