@@ -73,14 +73,29 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		RequestContext context = RequestContext.getCurrentContext();
 		// 获取原始Http请求
 		HttpServletRequest request = context.getRequest();
+		HttpServletResponse response = context.getResponse();
 		String path = request.getServletPath();
-		//忽略不需要请求头的请求
+		/**
+		 * 忽略不需要任何请求头,不需要登录的请求
+		 */
 		if(SysConstant.getNoNeedHeaderUrl().contains(path)){
 			context.setSendZuulResponse(true); // 将请求往后转发
 			context.setResponseStatusCode(200);
 			return context;
 		}
-		
+		/**
+		 * 校验Web前端发送预检请求
+		 */
+		if (request.getMethod().equals("OPTIONS")) {
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.setHeader("Content-Type", "application/json;charset=UTF-8");
+			context.setSendZuulResponse(true); // 将请求往后转发
+			context.setResponseStatusCode(200);
+			return context;
+        }
+		/**
+		 * 获取请求头参数
+		 */
 		// 获取用户ID
 		String userID = request.getHeader("userID");
 		// 获取国家代码
@@ -94,84 +109,138 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		// 获取token
 		String token = request.getHeader("token");
 		
-		//校验访问接口时是否登录
-		if(!SysConstant.getLoginUrl().contains(path)){
+		/**
+		 * 校验需要请求头,不需要登录的请求(Url 不带参数)
+		 */
+		if(SysConstant.getNOLoginUrlOne().contains(path)){
+			if (!StringUtils.isEmpty(userID)) {
+				//调用不需要登录请求头的校验
+				return notLoginHeaderValidate(context,request,userID,countryCode,clearingCode,branchCode);
+			} else {
+				//调用请求头缺失UserID方法
+				return loseUserID(context,request);
+			}
+		}
+		/**
+		 * 校验需要请求头,不需要登录的请求(Url 带参数)
+		 */
+		for(int i=0;i<SysConstant.getNOLoginUrlTwo().size();i++){
+			if(SysConstant.getNOLoginUrlTwo().get(i).indexOf(path)!=-1){
+				if (!StringUtils.isEmpty(userID)) {
+					//调用不需要登录请求头的校验
+					return notLoginHeaderValidate(context,request,userID,countryCode,clearingCode,branchCode);
+				} else {
+					//调用请求头缺失UserID方法
+					return loseUserID(context,request);
+				}
+			}
+		}
+		/**
+		 * 校验需要请求头,需要登录的请求
+		 */
+		if(!SysConstant.getNOLoginUrlOne().contains(path) 
+			&& !SysConstant.getLoginUrl().contains(path)){
+			//校验请求头是否丢失
+			if(!StringUtils.isEmpty(userID)){
+				//调用缺失UserID方法
+				return loseUserID(context,request);
+			}
+			//校验是否登录
 			if(StringUtils.isEmpty(customerID) || StringUtils.isEmpty(token)){
-				HttpServletResponse response = context.getResponse();
-				response.setHeader("Content-Type", "application/json;charset=UTF-8");
-				//response.setHeader("Access-Control-Allow-Headers","x-requested-with,content-type");
-				context.setSendZuulResponse(false); // 终止转发，返回响应报文
-				context.setResponseStatusCode(400);
-				Map<String, String> responseMap = new HashMap<String, String>();
-				responseMap.put("errorcode", "400");
-				responseMap.put("errormsg", "请求被拦截-没有登录");
-				context.setResponseBody(JSON.toJSONString(responseMap));
-				return context;
+				//调用未登录方法
+				return noLogin(context,request);
 			}
 			//校验token所包含的customerID 是否是传进来的customerID
 			Claims userClaims = jwtToken.parseToken(token);
 			if(!customerID.equals(userClaims.get("customerID"))){
-				HttpServletResponse response = context.getResponse();
-				response.setHeader("Content-Type", "application/json;charset=UTF-8");
-				//response.setHeader("Access-Control-Allow-Headers","x-requested-with,content-type");
-				context.setSendZuulResponse(false); // 终止转发，返回响应报文
-				context.setResponseStatusCode(400);
-				Map<String, String> responseMap = new HashMap<String, String>();
-				responseMap.put("errorcode", "400");
-				responseMap.put("errormsg", "请求被拦截-无权限");
-				context.setResponseBody(JSON.toJSONString(responseMap));
-				return context;
+				//调用无权限方法
+				return noPermission(context,request);
 			}
 		}
-		if (!StringUtils.isEmpty(userID)) {
-			PermissionModel permission = new PermissionModel();
-			permission.setUserID(userID);
-			permission.setCountryCode(countryCode);
-			permission.setClearingCode(clearingCode);
-			permission.setBranchCode(branchCode);
-			ResponseEntity<String> result = restTemplate.postForEntity(SysConstant.PERMISSION_URL,
-					PostUtil.getRequestEntity(JSON.toJSONString(permission)), String.class);
-			JSONObject rejson = JSON.parseObject(result.getBody());
-			JSONObject rejsondata = JSON.parseObject(rejson.get("data").toString());
-			if (result.getStatusCodeValue() == 200 && rejson.get("code").equals("1")) {
-				context.addZuulRequestHeader("userID", userID);
-				context.addZuulRequestHeader("countryCode", rejsondata.get("countryCode").toString());
-				context.addZuulRequestHeader("clearingCode", rejsondata.get("clearingCode").toString());
-				context.addZuulRequestHeader("branchCode", rejsondata.get("branchCode").toString());
-				context.addZuulRequestHeader("customerID", customerID);
-			
-				context.setSendZuulResponse(true); // 将请求往后转发
-				context.setResponseStatusCode(200);
-				return context;
-			}else{
-				HttpServletResponse response = context.getResponse();
-				response.setHeader("Content-Type", "application/json;charset=UTF-8");
-				//response.setHeader("Access-Control-Allow-Headers","x-requested-with,content-type");
-				context.setSendZuulResponse(false); // 终止转发，返回响应报文
-				context.setResponseStatusCode(400);
-				Map<String, String> responseMap = new HashMap<String, String>();
-				responseMap.put("errorcode", "400");
-				responseMap.put("errormsg", "请求被拦截-无权限");
-				context.setResponseBody(JSON.toJSONString(responseMap));
-				return context;
-			}
-		} else {
-			HttpServletResponse response = context.getResponse();
-			if (request.getMethod().equals("OPTIONS")) {
-				response.setStatus(HttpServletResponse.SC_OK);
-				response.setHeader("Content-Type", "application/json;charset=UTF-8");
-				context.setSendZuulResponse(true); // 将请求往后转发
-				context.setResponseStatusCode(200);
-				return context;
-	        }
-			response.setHeader("Content-Type", "application/json;charset=UTF-8");
-			context.setSendZuulResponse(false); // 终止转发，返回响应报文
-			context.setResponseStatusCode(400);
-			Map<String, String> responseMap = new HashMap<String, String>();
-			responseMap.put("errorcode", "400");
-			responseMap.put("errormsg", "请求被拦截-请求头缺失userID");
-			context.setResponseBody(JSON.toJSONString(responseMap));
-			return context;
-		}
+		return context;
 	}
+	
+	/**
+	 * 请求头缺失UserID
+	 */
+	private RequestContext loseUserID(RequestContext context,HttpServletRequest request){
+		HttpServletResponse response = context.getResponse();
+		response.setHeader("Content-Type", "application/json;charset=UTF-8");
+		context.setSendZuulResponse(false); // 终止转发，返回响应报文
+		context.setResponseStatusCode(400);
+		Map<String, String> responseMap = new HashMap<String, String>();
+		responseMap.put("errorcode", "400");
+		responseMap.put("errormsg", "请求被拦截-请求头缺失userID");
+		context.setResponseBody(JSON.toJSONString(responseMap));
+		return context;
+	}
+	
+	/**
+	 * 无权限
+	 */
+	private RequestContext noPermission(RequestContext context,HttpServletRequest request){
+		HttpServletResponse response = context.getResponse();
+		response.setHeader("Content-Type", "application/json;charset=UTF-8");
+		context.setSendZuulResponse(false); // 终止转发，返回响应报文
+		context.setResponseStatusCode(400);
+		Map<String, String> responseMap = new HashMap<String, String>();
+		responseMap.put("errorcode", "400");
+		responseMap.put("errormsg", "请求被拦截-无权限");
+		context.setResponseBody(JSON.toJSONString(responseMap));
+		return context;
+	}
+	
+	/**
+	 * 非登录请求头校验
+	 */
+	private RequestContext notLoginHeaderValidate(
+			RequestContext context,
+			HttpServletRequest request,
+			String userID,
+			String countryCode,
+			String clearingCode,
+			String branchCode
+			){
+		PermissionModel permission = new PermissionModel();
+		permission.setUserID(userID);
+		permission.setCountryCode(countryCode);
+		permission.setClearingCode(clearingCode);
+		permission.setBranchCode(branchCode);
+		ResponseEntity<String> result = restTemplate.postForEntity(SysConstant.PERMISSION_URL,
+				PostUtil.getRequestEntity(JSON.toJSONString(permission)), String.class);
+		JSONObject rejson = JSON.parseObject(result.getBody());
+		JSONObject rejsondata = JSON.parseObject(rejson.get("data").toString());
+		if (result.getStatusCodeValue() == 200 && rejson.get("code").equals("1")) {
+			context.addZuulRequestHeader("userID", userID);
+			context.addZuulRequestHeader("countryCode", rejsondata.get("countryCode").toString());
+			context.addZuulRequestHeader("clearingCode", rejsondata.get("clearingCode").toString());
+			context.addZuulRequestHeader("branchCode", rejsondata.get("branchCode").toString());
+		
+			context.setSendZuulResponse(true); // 将请求往后转发
+			context.setResponseStatusCode(200);
+			return context;
+		}else{
+			//调用无权限方法
+			noPermission(context,request);
+		}
+		return context;
+	}
+
+
+    /**
+     * 没有登录
+     */
+    private RequestContext noLogin(RequestContext context,HttpServletRequest request){
+    	HttpServletResponse response = context.getResponse();
+		response.setHeader("Content-Type", "application/json;charset=UTF-8");
+		context.setSendZuulResponse(false); // 终止转发，返回响应报文
+		context.setResponseStatusCode(400);
+		Map<String, String> responseMap = new HashMap<String, String>();
+		responseMap.put("errorcode", "400");
+		responseMap.put("errormsg", "请求被拦截-没有登录");
+		context.setResponseBody(JSON.toJSONString(responseMap));
+		return context;
+    }
+
+     
 }
