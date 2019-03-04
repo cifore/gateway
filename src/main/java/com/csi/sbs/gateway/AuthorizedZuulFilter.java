@@ -97,7 +97,7 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		 * 获取请求头参数
 		 */
 		// 获取用户ID
-		String userID = request.getHeader("userID");
+		String userID = request.getHeader("developerID");
 		// 获取国家代码
 		String countryCode = request.getHeader("countryCode");
 		// 获取银行代码
@@ -117,7 +117,7 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 				//调用不需要登录请求头的校验
 				return notLoginHeaderValidate(context,request,userID,countryCode,clearingCode,branchCode,token,customerID);
 			} else {
-				//调用请求头缺失UserID方法
+				//调用请求头缺失developerID方法
 				return loseUserID(context,request);
 			}
 		}
@@ -130,7 +130,7 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 					//调用不需要登录请求头的校验
 					return notLoginHeaderValidate(context,request,userID,countryCode,clearingCode,branchCode,token,customerID);
 				} else {
-					//调用请求头缺失UserID方法
+					//调用请求头缺失developerID方法
 					return loseUserID(context,request);
 				}
 			}
@@ -141,7 +141,7 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		if(!SysConstant.getNOLoginUrlOne().contains(path) 
 			&& !SysConstant.getLoginUrl().contains(path)){
 			if(!StringUtils.isEmpty(userID)){
-				//调用缺失UserID方法
+				//调用缺失developerID方法
 				return loseUserID(context,request);
 			}
 			//校验是否登录
@@ -162,7 +162,7 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 	}
 	
 	/**
-	 * 请求头缺失UserID
+	 * 请求头缺失developerID
 	 */
 	private RequestContext loseUserID(RequestContext context,HttpServletRequest request){
 		HttpServletResponse response = context.getResponse();
@@ -171,7 +171,7 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		context.setResponseStatusCode(400);
 		Map<String, String> responseMap = new HashMap<String, String>();
 		responseMap.put("errorcode", "400");
-		responseMap.put("errormsg", "请求被拦截-请求头缺失userID");
+		responseMap.put("errormsg", "请求被拦截-请求头缺失developerID");
 		context.setResponseBody(JSON.toJSONString(responseMap));
 		return context;
 	}
@@ -214,7 +214,7 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		JSONObject rejson = JSON.parseObject(result.getBody());
 		JSONObject rejsondata = JSON.parseObject(rejson.get("data").toString());
 		if (result.getStatusCodeValue() == 200 && rejson.get("code").equals("1")) {
-			context.addZuulRequestHeader("userID", userID);
+			context.addZuulRequestHeader("developerID", userID);
 			context.addZuulRequestHeader("countryCode", rejsondata.get("countryCode").toString());
 			context.addZuulRequestHeader("clearingCode", rejsondata.get("clearingCode").toString());
 			context.addZuulRequestHeader("branchCode", rejsondata.get("branchCode").toString());
