@@ -115,7 +115,7 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		if(SysConstant.getNOLoginUrlOne().contains(path)){
 			if (!StringUtils.isEmpty(userID)) {
 				//调用不需要登录请求头的校验
-				return notLoginHeaderValidate(context,request,userID,countryCode,clearingCode,branchCode);
+				return notLoginHeaderValidate(context,request,userID,countryCode,clearingCode,branchCode,token,customerID);
 			} else {
 				//调用请求头缺失UserID方法
 				return loseUserID(context,request);
@@ -128,7 +128,7 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 			if(SysConstant.getNOLoginUrlTwo().get(i).indexOf(path)!=-1){
 				if (!StringUtils.isEmpty(userID)) {
 					//调用不需要登录请求头的校验
-					return notLoginHeaderValidate(context,request,userID,countryCode,clearingCode,branchCode);
+					return notLoginHeaderValidate(context,request,userID,countryCode,clearingCode,branchCode,token,customerID);
 				} else {
 					//调用请求头缺失UserID方法
 					return loseUserID(context,request);
@@ -156,7 +156,7 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 				return noPermission(context,request);
 			}
 			//校验通过
-			return notLoginHeaderValidate(context,request,userID,countryCode,clearingCode,branchCode);
+			return notLoginHeaderValidate(context,request,userID,countryCode,clearingCode,branchCode,token,customerID);
 		}
 		return context;
 	}
@@ -200,7 +200,9 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 			String userID,
 			String countryCode,
 			String clearingCode,
-			String branchCode
+			String branchCode,
+			String token,
+			String customerID
 			){
 		PermissionModel permission = new PermissionModel();
 		permission.setUserID(userID);
@@ -216,7 +218,9 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 			context.addZuulRequestHeader("countryCode", rejsondata.get("countryCode").toString());
 			context.addZuulRequestHeader("clearingCode", rejsondata.get("clearingCode").toString());
 			context.addZuulRequestHeader("branchCode", rejsondata.get("branchCode").toString());
-		
+		    context.addZuulRequestHeader("token", token);
+		    context.addZuulRequestHeader("customerID", customerID);
+			
 			context.setSendZuulResponse(true); // 将请求往后转发
 			context.setResponseStatusCode(200);
 			return context;
