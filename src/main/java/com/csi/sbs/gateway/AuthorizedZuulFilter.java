@@ -140,7 +140,6 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		 */
 		if(!SysConstant.getNOLoginUrlOne().contains(path) 
 			&& !SysConstant.getLoginUrl().contains(path)){
-			//校验请求头是否丢失
 			if(!StringUtils.isEmpty(userID)){
 				//调用缺失UserID方法
 				return loseUserID(context,request);
@@ -156,6 +155,8 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 				//调用无权限方法
 				return noPermission(context,request);
 			}
+			//校验通过
+			return notLoginHeaderValidate(context,request,userID,countryCode,clearingCode,branchCode);
 		}
 		return context;
 	}
