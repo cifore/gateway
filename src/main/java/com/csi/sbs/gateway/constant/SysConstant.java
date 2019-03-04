@@ -65,6 +65,13 @@ public class SysConstant {
 		   
 		   list.add("/creditcard/creditcard/openingCreditcardAccount");
 		   list.add("/creditcard/creditcard/creditCardNumberCreation");
+		   list.add("/creditcard/creditcard/creditCardNumberValidation");
+		   list.add("/creditcard/creditcard/merchant/historyQuery");
+		   list.add("/creditcard/creditcard/merchant/getMerchants");
+		   list.add("/creditcard/creditcard/merchant/queryMerchantById");
+		   list.add("/creditcard/creditcard/merchant/insertMerchant");
+		   list.add("/creditcard/creditcard/merchant/updateMerchant");
+		   list.add("/creditcard/creditcard/merchant/deleteMerchant");
 		   
 		   return list;
 	   }
@@ -74,7 +81,11 @@ public class SysConstant {
 		   list.add("/sysadmin/sysadmin/getApiInfo");
 		   list.add("/sysadmin/sysadmin/trantype/queryTranType");
 		   list.add("/sysadmin/sysadmin/getUserInfo");
+		   
 		   list.add("/deposit/deposit/rate/getAllAmountRangeList");
+		   
+		   list.add("/creditcard/creditcard/merchant/merchantEnquiry");
+		   list.add("/creditcard/creditcard/merchant/merchantPayment");
 		   
 		   return list;
 	   }
