@@ -140,7 +140,7 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		 */
 		if(!SysConstant.getNOLoginUrlOne().contains(path) 
 			&& !SysConstant.getLoginUrl().contains(path)){
-			if(!StringUtils.isEmpty(userID)){
+			if(StringUtils.isEmpty(userID)){
 				//调用缺失developerID方法
 				return loseUserID(context,request);
 			}
