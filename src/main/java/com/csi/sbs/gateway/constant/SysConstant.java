@@ -8,6 +8,8 @@ public class SysConstant {
 	
 	   //权限校验地址
 	   public static final String PERMISSION_URL = "http://SYSADMIN/sysadmin/permission/permissionValidate";
+	   //查询客户地址
+	   public static final String GET_CUSTOMER_URL = "http://DEPOSIT/deposit/account/getCustomer";
 	   //不需要任何请求头,不需要登录的URL(Url 不带参数)
 	   public static List<String> getNoNeedHeaderUrl(){
 		   List<String> list = new ArrayList<String>();

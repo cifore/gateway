@@ -13,8 +13,11 @@ import io.jsonwebtoken.Claims;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.csi.sbs.common.business.json.JsonProcess;
 import com.csi.sbs.common.business.util.JwtTokenProviderUtil;
+import com.csi.sbs.common.business.util.XmlToJsonUtil;
 import com.csi.sbs.gateway.constant.SysConstant;
+import com.csi.sbs.gateway.model.FindCustomerModel;
 import com.csi.sbs.gateway.model.PermissionModel;
 import com.csi.sbs.gateway.util.PostUtil;
 import com.netflix.zuul.ZuulFilter;
@@ -98,17 +101,41 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		 */
 		// 获取用户ID
 		String userID = request.getHeader("developerID");
+		// 获取ID
+		String ID = request.getHeader("ID");
 		// 获取国家代码
 		String countryCode = request.getHeader("countryCode");
 		// 获取银行代码
 		String clearingCode = request.getHeader("clearingCode");
 		// 获取分行代码
 		String branchCode = request.getHeader("branchCode");
-		// 获取客户身份证号码
-		String customerID = request.getHeader("customerID");
 		// 获取token
 		String token = request.getHeader("token");
 		
+		/**
+		 * 根据ID去查询customerID
+		 */
+		FindCustomerModel fcm = new FindCustomerModel();
+		fcm.setID(ID);
+		ResponseEntity<String> result1 = restTemplate.postForEntity(SysConstant.GET_CUSTOMER_URL,
+				PostUtil.getRequestEntity(JSON.toJSONString(fcm)), String.class);
+		JSONObject str1 = null;
+		try {
+			str1 = XmlToJsonUtil.xmlToJson(result1.getBody());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String str2 = JsonProcess.returnValue(str1, "ResultUtil");
+		JSONObject str3 = JsonProcess.changeToJSONObject(str2);
+		String str4 = JsonProcess.returnValue(str3, "code");
+		if(str4.equals("0")){
+			//调用无权限方法
+			return noPermission(context,request);
+		}
+		String str5 = JsonProcess.returnValue(str3, "data");
+		JSONObject str6 = JsonProcess.changeToJSONObject(str5);
+		String customerID = JsonProcess.returnValue(str6, "customerid");
 		/**
 		 * 校验需要请求头,不需要登录的请求(Url 不带参数)
 		 */
