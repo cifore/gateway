@@ -18,7 +18,6 @@ import com.csi.sbs.common.business.util.JwtTokenProviderUtil;
 import com.csi.sbs.common.business.util.XmlToJsonUtil;
 import com.csi.sbs.gateway.constant.SysConstant;
 import com.csi.sbs.gateway.model.FindCustomerModel;
-import com.csi.sbs.gateway.model.PermissionModel;
 import com.csi.sbs.gateway.util.PostUtil;
 import com.netflix.zuul.ZuulFilter;
 
@@ -111,6 +110,7 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		String branchCode = request.getHeader("branchCode");
 		// 获取token
 		String token = request.getHeader("token");
+		
 		
 		/**
 		 * 根据ID去查询customerID
@@ -231,30 +231,30 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 			String token,
 			String customerID
 			){
-		PermissionModel permission = new PermissionModel();
-		permission.setUserID(userID);
-		permission.setCountryCode(countryCode);
-		permission.setClearingCode(clearingCode);
-		permission.setBranchCode(branchCode);
-		ResponseEntity<String> result = restTemplate.postForEntity(SysConstant.PERMISSION_URL,
-				PostUtil.getRequestEntity(JSON.toJSONString(permission)), String.class);
-		JSONObject rejson = JSON.parseObject(result.getBody());
-		JSONObject rejsondata = JSON.parseObject(rejson.get("data").toString());
-		if (result.getStatusCodeValue() == 200 && rejson.get("code").equals("1")) {
-			context.addZuulRequestHeader("developerID", userID);
-			context.addZuulRequestHeader("countryCode", rejsondata.get("countryCode").toString());
-			context.addZuulRequestHeader("clearingCode", rejsondata.get("clearingCode").toString());
-			context.addZuulRequestHeader("branchCode", rejsondata.get("branchCode").toString());
-		    context.addZuulRequestHeader("token", token);
-		    context.addZuulRequestHeader("customerID", customerID);
-			
-			context.setSendZuulResponse(true); // 将请求往后转发
-			context.setResponseStatusCode(200);
-			return context;
-		}else{
-			//调用无权限方法
-			noPermission(context,request);
-		}
+//		PermissionModel permission = new PermissionModel();
+//		permission.setUserID(userID);
+//		permission.setCountryCode(countryCode);
+//		permission.setClearingCode(clearingCode);
+//		permission.setBranchCode(branchCode);
+//		ResponseEntity<String> result = restTemplate.postForEntity(SysConstant.PERMISSION_URL,
+//				PostUtil.getRequestEntity(JSON.toJSONString(permission)), String.class);
+//		JSONObject rejson = JSON.parseObject(result.getBody());
+//		JSONObject rejsondata = JSON.parseObject(rejson.get("data").toString());
+//		if (result.getStatusCodeValue() == 200 && rejson.get("code").equals("1")) {
+//			context.addZuulRequestHeader("developerID", userID);
+//			context.addZuulRequestHeader("countryCode", rejsondata.get("countryCode").toString());
+//			context.addZuulRequestHeader("clearingCode", rejsondata.get("clearingCode").toString());
+//			context.addZuulRequestHeader("branchCode", rejsondata.get("branchCode").toString());
+//		    context.addZuulRequestHeader("token", token);
+//		    context.addZuulRequestHeader("customerID", customerID);
+//			
+//			context.setSendZuulResponse(true); // 将请求往后转发
+//			context.setResponseStatusCode(200);
+//			return context;
+//		}else{
+//			//调用无权限方法
+//			noPermission(context,request);
+//		}
 		return context;
 	}
 

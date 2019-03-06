@@ -1,7 +1,14 @@
 package com.csi.sbs.gateway.model;
 
-public class FindCustomerModel {
+import java.io.Serializable;
+
+public class FindCustomerModel implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9067670765319443845L;
+
 	private String ID;
 
 	private String customerID;

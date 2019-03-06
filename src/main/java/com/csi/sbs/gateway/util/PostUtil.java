@@ -9,12 +9,13 @@ import org.springframework.http.MediaType;
 public class PostUtil {
 	
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static HttpEntity<String> getRequestEntity(String json) {
 		// headers
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		// httpEntity
-		HttpEntity<String> requestEntity = new HttpEntity<String>(json, requestHeaders);
+		HttpEntity requestEntity = new HttpEntity(json, requestHeaders);
 		
 		return requestEntity;
 	}
