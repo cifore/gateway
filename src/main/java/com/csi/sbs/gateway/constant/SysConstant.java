@@ -10,30 +10,15 @@ public class SysConstant {
 	   public static final String PERMISSION_URL = "http://SYSADMIN/sysadmin/permission/permissionValidate";
 	   //查询客户地址
 	   public static final String GET_CUSTOMER_URL = "http://DEPOSIT/deposit/account/getCustomer";
-	   //不需要任何请求头,不需要登录的URL(Url 不带参数)
-	   public static List<String> getNoNeedHeaderUrl(){
+	   //不需要登录的URL(Url 不带参数)
+	   public static List<String> getNoNeedLoginOne(){
 		   List<String> list = new ArrayList<String>();
 		   list.add("/sysadmin/sysadmin/branch/getCountryCodes");
 		   list.add("/sysadmin/sysadmin/branch/getClearingCodeByCountryCode");
 		   list.add("/sysadmin/sysadmin/branch/getBrancoByCC");
 		   list.add("/sysadmin/sysadmin/permission/userAuthorize");
-		   
-		   list.add("/deposit/deposit/account/accountNumberValidation");
-		   
-		   list.add("/creditcard/creditcard/creditCardNumberValidation");
-		   
-		   return list;
-	   }
-	   //客户登录的URL(Url 不带参数)
-	   public static List<String> getLoginUrl(){
-		   List<String> list = new ArrayList<String>();
 		   list.add("/sysadmin/sysadmin/login/login");
 		   
-		   return list;
-	   }
-	   //需要请求头,不需要登录的URL(Url 不带参数)
-	   public static List<String> getNOLoginUrlOne(){
-		   List<String> list = new ArrayList<String>();
 		   list.add("/sysadmin/sysadmin/currency/getCurrencys");
 		   list.add("/sysadmin/sysadmin/queryApiList");
 		   list.add("/sysadmin/sysadmin/testApiSend");
@@ -50,6 +35,8 @@ public class SysConstant {
 		   list.add("/sysadmin/sysadmin/userbranch/addUserBranch");
 		   list.add("/sysadmin/sysadmin/branch/addBranch");
 		   
+		   list.add("/deposit/deposit/account/accountNumberValidation");
+		   
 		   list.add("/deposit/deposit/rate/getAllTdRateList");
 		   list.add("/deposit/deposit/rate/getPeirodList");
 		   list.add("/deposit/deposit/rate/updateTdRate");
@@ -63,6 +50,8 @@ public class SysConstant {
 		   list.add("/deposit/deposit/rate/getAmountRangeInfoById");
 		   list.add("/deposit/deposit/account/customerCreation");
 		   
+		   list.add("/creditcard/creditcard/creditCardNumberValidation");
+		   
 		   list.add("/creditcard/creditcard/creditCardNumberCreation");
 		   list.add("/creditcard/creditcard/creditCardNumberValidation");
 		   list.add("/creditcard/creditcard/merchant/historyQuery");
@@ -74,8 +63,8 @@ public class SysConstant {
 		   
 		   return list;
 	   }
-	   //需要请求头,不需要登录的Url(Url 带参数)
-	   public static List<String> getNOLoginUrlTwo(){
+	   //不需要登录的URL(URL带参数)
+	   public static List<String> getNoNeedLoginTwo(){
 		   List<String> list = new ArrayList<String>();
 		   list.add("/sysadmin/sysadmin/getApiInfo");
 		   list.add("/sysadmin/sysadmin/trantype/queryTranType");

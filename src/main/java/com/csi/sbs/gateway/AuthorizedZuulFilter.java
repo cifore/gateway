@@ -13,11 +13,10 @@ import io.jsonwebtoken.Claims;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.csi.sbs.common.business.json.JsonProcess;
 import com.csi.sbs.common.business.util.JwtTokenProviderUtil;
-import com.csi.sbs.common.business.util.XmlToJsonUtil;
 import com.csi.sbs.gateway.constant.SysConstant;
-import com.csi.sbs.gateway.model.FindCustomerModel;
+import com.csi.sbs.gateway.model.HeaderModel;
+import com.csi.sbs.gateway.model.PermissionModel;
 import com.csi.sbs.gateway.util.PostUtil;
 import com.netflix.zuul.ZuulFilter;
 
@@ -31,7 +30,7 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 
 	@Resource
 	private RestTemplate restTemplate;
-	
+
 	private JwtTokenProviderUtil jwtToken = new JwtTokenProviderUtil("123456");
 
 	@SuppressWarnings("unused")
@@ -77,136 +76,58 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		HttpServletRequest request = context.getRequest();
 		HttpServletResponse response = context.getResponse();
 		String path = request.getServletPath();
-		/**
-		 * 忽略不需要任何请求头,不需要登录的请求
-		 */
-		if(SysConstant.getNoNeedHeaderUrl().contains(path)){
-			context.setSendZuulResponse(true); // 将请求往后转发
-			context.setResponseStatusCode(200);
-			return context;
-		}
-		/**
-		 * 校验Web前端发送预检请求
-		 */
+		// 校验Web前端发送预检请求
 		if (request.getMethod().equals("OPTIONS")) {
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.setHeader("Content-Type", "application/json;charset=UTF-8");
 			context.setSendZuulResponse(true); // 将请求往后转发
 			context.setResponseStatusCode(200);
 			return context;
-        }
-		/**
-		 * 获取请求头参数
-		 */
-		// 获取用户ID
-		String userID = request.getHeader("developerID");
-		// 获取ID
-		String ID = request.getHeader("ID");
-		// 获取国家代码
-		String countryCode = request.getHeader("countryCode");
-		// 获取银行代码
-		String clearingCode = request.getHeader("clearingCode");
-		// 获取分行代码
-		String branchCode = request.getHeader("branchCode");
+		}
+		// 忽略不需要登录的请求(Url 不带参数)
+		if (SysConstant.getNoNeedLoginOne().contains(path)) {
+			context.setSendZuulResponse(true); // 将请求往后转发
+			context.setResponseStatusCode(200);
+			return context;
+		}
+		// 忽略不需要登录的请求(Url 带参数)
+		for (int i = 0; i < SysConstant.getNoNeedLoginTwo().size(); i++) {
+			if (SysConstant.getNoNeedLoginTwo().get(i).indexOf(path) != -1) {
+				context.setSendZuulResponse(true); // 将请求往后转发
+				context.setResponseStatusCode(200);
+				return context;
+			}
+		}
 		// 获取token
 		String token = request.getHeader("token");
-		
-		
-		/**
-		 * 根据ID去查询customerID
-		 */
-		FindCustomerModel fcm = new FindCustomerModel();
-		fcm.setID(ID);
-		ResponseEntity<String> result1 = restTemplate.postForEntity(SysConstant.GET_CUSTOMER_URL,
-				PostUtil.getRequestEntity(JSON.toJSONString(fcm)), String.class);
-		JSONObject str1 = null;
-		try {
-			str1 = XmlToJsonUtil.xmlToJson(result1.getBody());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		// 解密token
+		Claims userClaims = jwtToken.parseToken(token);
+		String userID = (String) userClaims.get("developerID");
+		String countryCode = (String) userClaims.get("countryCode");
+		String clearingCode = (String) userClaims.get("clearingCode");
+		String branchCode = (String) userClaims.get("branchCode");
+		String customerNumber = (String) userClaims.get("customerNumber");
+		String loginName = (String) userClaims.get("loginName");
+
+		HeaderModel header = new HeaderModel();
+		header.setCountryCode(countryCode);
+		header.setClearingCode(clearingCode);
+		header.setBranchCode(branchCode);
+		header.setUserID(userID);
+		header.setLoginName(loginName);
+		header.setCustomerNumber(customerNumber);
+		// 校验是否登录
+		if (StringUtils.isEmpty(token)) {
+			// 调用未登录方法
+			return noLogin(context, request);
 		}
-		String str2 = JsonProcess.returnValue(str1, "ResultUtil");
-		JSONObject str3 = JsonProcess.changeToJSONObject(str2);
-		String str4 = JsonProcess.returnValue(str3, "code");
-		if(str4.equals("0")){
-			//调用无权限方法
-			return noPermission(context,request);
-		}
-		String str5 = JsonProcess.returnValue(str3, "data");
-		JSONObject str6 = JsonProcess.changeToJSONObject(str5);
-		String customerID = JsonProcess.returnValue(str6, "customerid");
-		/**
-		 * 校验需要请求头,不需要登录的请求(Url 不带参数)
-		 */
-		if(SysConstant.getNOLoginUrlOne().contains(path)){
-			if (!StringUtils.isEmpty(userID)) {
-				//调用不需要登录请求头的校验
-				return notLoginHeaderValidate(context,request,userID,countryCode,clearingCode,branchCode,token,customerID);
-			} else {
-				//调用请求头缺失developerID方法
-				return loseUserID(context,request);
-			}
-		}
-		/**
-		 * 校验需要请求头,不需要登录的请求(Url 带参数)
-		 */
-		for(int i=0;i<SysConstant.getNOLoginUrlTwo().size();i++){
-			if(SysConstant.getNOLoginUrlTwo().get(i).indexOf(path)!=-1){
-				if (!StringUtils.isEmpty(userID)) {
-					//调用不需要登录请求头的校验
-					return notLoginHeaderValidate(context,request,userID,countryCode,clearingCode,branchCode,token,customerID);
-				} else {
-					//调用请求头缺失developerID方法
-					return loseUserID(context,request);
-				}
-			}
-		}
-		/**
-		 * 校验需要请求头,需要登录的请求
-		 */
-		if(!SysConstant.getNOLoginUrlOne().contains(path) 
-			&& !SysConstant.getLoginUrl().contains(path)){
-			if(StringUtils.isEmpty(userID)){
-				//调用缺失developerID方法
-				return loseUserID(context,request);
-			}
-			//校验是否登录
-			if(StringUtils.isEmpty(customerID) || StringUtils.isEmpty(token)){
-				//调用未登录方法
-				return noLogin(context,request);
-			}
-			//校验token所包含的customerID 是否是传进来的customerID
-			Claims userClaims = jwtToken.parseToken(token);
-			if(!customerID.equals(userClaims.get("customerID"))){
-				//调用无权限方法
-				return noPermission(context,request);
-			}
-			//校验通过
-			return notLoginHeaderValidate(context,request,userID,countryCode,clearingCode,branchCode,token,customerID);
-		}
-		return context;
+		return loginValidate(context, request, header);
 	}
-	
-	/**
-	 * 请求头缺失developerID
-	 */
-	private RequestContext loseUserID(RequestContext context,HttpServletRequest request){
-		HttpServletResponse response = context.getResponse();
-		response.setHeader("Content-Type", "application/json;charset=UTF-8");
-		context.setSendZuulResponse(false); // 终止转发，返回响应报文
-		context.setResponseStatusCode(400);
-		Map<String, String> responseMap = new HashMap<String, String>();
-		responseMap.put("errorcode", "400");
-		responseMap.put("errormsg", "请求被拦截-请求头缺失developerID");
-		context.setResponseBody(JSON.toJSONString(responseMap));
-		return context;
-	}
-	
+
 	/**
 	 * 无权限
 	 */
-	private RequestContext noPermission(RequestContext context,HttpServletRequest request){
+	private RequestContext noPermission(RequestContext context, HttpServletRequest request) {
 		HttpServletResponse response = context.getResponse();
 		response.setHeader("Content-Type", "application/json;charset=UTF-8");
 		context.setSendZuulResponse(false); // 终止转发，返回响应报文
@@ -217,53 +138,43 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		context.setResponseBody(JSON.toJSONString(responseMap));
 		return context;
 	}
-	
+
 	/**
-	 * 非登录请求头校验
+	 * 登录后处理
 	 */
-	private RequestContext notLoginHeaderValidate(
-			RequestContext context,
-			HttpServletRequest request,
-			String userID,
-			String countryCode,
-			String clearingCode,
-			String branchCode,
-			String token,
-			String customerID
-			){
-//		PermissionModel permission = new PermissionModel();
-//		permission.setUserID(userID);
-//		permission.setCountryCode(countryCode);
-//		permission.setClearingCode(clearingCode);
-//		permission.setBranchCode(branchCode);
-//		ResponseEntity<String> result = restTemplate.postForEntity(SysConstant.PERMISSION_URL,
-//				PostUtil.getRequestEntity(JSON.toJSONString(permission)), String.class);
-//		JSONObject rejson = JSON.parseObject(result.getBody());
-//		JSONObject rejsondata = JSON.parseObject(rejson.get("data").toString());
-//		if (result.getStatusCodeValue() == 200 && rejson.get("code").equals("1")) {
-//			context.addZuulRequestHeader("developerID", userID);
-//			context.addZuulRequestHeader("countryCode", rejsondata.get("countryCode").toString());
-//			context.addZuulRequestHeader("clearingCode", rejsondata.get("clearingCode").toString());
-//			context.addZuulRequestHeader("branchCode", rejsondata.get("branchCode").toString());
-//		    context.addZuulRequestHeader("token", token);
-//		    context.addZuulRequestHeader("customerID", customerID);
-//			
-//			context.setSendZuulResponse(true); // 将请求往后转发
-//			context.setResponseStatusCode(200);
-//			return context;
-//		}else{
-//			//调用无权限方法
-//			noPermission(context,request);
-//		}
+	private RequestContext loginValidate(RequestContext context, HttpServletRequest request, HeaderModel header) {
+		PermissionModel permission = new PermissionModel();
+		permission.setUserID(header.getUserID());
+		permission.setCountryCode(header.getCountryCode());
+		permission.setClearingCode(header.getClearingCode());
+		permission.setBranchCode(header.getBranchCode());
+		ResponseEntity<String> result = restTemplate.postForEntity(SysConstant.PERMISSION_URL,
+				PostUtil.getRequestEntity(JSON.toJSONString(permission)), String.class);
+		JSONObject rejson = JSON.parseObject(result.getBody());
+		JSONObject rejsondata = JSON.parseObject(rejson.get("data").toString());
+		if (result.getStatusCodeValue() == 200 && rejson.get("code").equals("1")) {
+			context.addZuulRequestHeader("developerID", header.getUserID());
+			context.addZuulRequestHeader("countryCode", rejsondata.get("countryCode").toString());
+			context.addZuulRequestHeader("clearingCode", rejsondata.get("clearingCode").toString());
+			context.addZuulRequestHeader("branchCode", rejsondata.get("branchCode").toString());
+			context.addZuulRequestHeader("customerNumber", header.getCustomerNumber());
+			context.addZuulRequestHeader("loginName", header.getLoginName());
+
+			context.setSendZuulResponse(true); // 将请求往后转发
+			context.setResponseStatusCode(200);
+			return context;
+		} else {
+			// 调用无权限方法
+			noPermission(context, request);
+		}
 		return context;
 	}
 
-
-    /**
-     * 没有登录
-     */
-    private RequestContext noLogin(RequestContext context,HttpServletRequest request){
-    	HttpServletResponse response = context.getResponse();
+	/**
+	 * 没有登录
+	 */
+	private RequestContext noLogin(RequestContext context, HttpServletRequest request) {
+		HttpServletResponse response = context.getResponse();
 		response.setHeader("Content-Type", "application/json;charset=UTF-8");
 		context.setSendZuulResponse(false); // 终止转发，返回响应报文
 		context.setResponseStatusCode(400);
@@ -272,7 +183,6 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		responseMap.put("errormsg", "请求被拦截-没有登录");
 		context.setResponseBody(JSON.toJSONString(responseMap));
 		return context;
-    }
+	}
 
-     
 }
