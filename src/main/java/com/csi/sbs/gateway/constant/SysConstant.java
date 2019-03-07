@@ -82,7 +82,7 @@ public class SysConstant {
 	   /**
         * 错误码
         */
-       public static final String ERROR_CODE1 = "0x00000002";//token 异常
+       public static final String ERROR_CODE1 = "403";//token 异常
        public static final String ERROR_CODE2 = "0x00000003";//未登录
        public static final String ERROR_CODE3 = "0x00000004";//没有权限
 }

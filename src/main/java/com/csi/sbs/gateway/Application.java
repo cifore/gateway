@@ -22,15 +22,15 @@ public class Application {
 		return new AuthorizedPreFilter();
 	}
 	
-//	@Bean
-//	public AuthorizedErrorFilter errorFilter() {
-//		return new AuthorizedErrorFilter();
-//	}
+	@Bean
+	public AuthorizedErrorFilter errorFilter() {
+		return new AuthorizedErrorFilter();
+	}
 	
-//	@Bean
-//	public AuthorizedPostFilter postFilter() {
-//		return new AuthorizedPostFilter();
-//	}
+	@Bean
+	public AuthorizedPostFilter postFilter() {
+		return new AuthorizedPostFilter();
+	}
 	
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
