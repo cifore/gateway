@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.boot.autoconfigure.web.ErrorController;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -13,7 +14,7 @@ import com.csi.sbs.gateway.constant.SysConstant;
 import com.csi.sbs.gateway.util.ResultUtil;
 
 
-
+@CrossOrigin // 解决跨域请求
 @Controller
 public class ErrorHandlerController implements ErrorController{
 

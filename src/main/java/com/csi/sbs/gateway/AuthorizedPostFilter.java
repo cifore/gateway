@@ -30,7 +30,7 @@ public class AuthorizedPostFilter extends ZuulFilter {
 		String code = (String) context.get("code");
 		String msg = (String) context.get("msg");
 		//token异常
-		if(code.equals(SysConstant.ERROR_CODE1)){
+		if(code!=null && code.equals(SysConstant.ERROR_CODE1)){
 			result.setCode(code);
 			result.setMsg(msg);
 			
@@ -40,9 +40,9 @@ public class AuthorizedPostFilter extends ZuulFilter {
 			
 			throw new GatewayException(Integer.parseInt(code),msg);
 		}
-		context.setSendZuulResponse(false); // 将请求往后转发
+		context.setSendZuulResponse(true); // 将请求往后转发
 		context.setResponseStatusCode(response.getStatus());
-		return null;
+		return context;
 	}
 
 	@Override
