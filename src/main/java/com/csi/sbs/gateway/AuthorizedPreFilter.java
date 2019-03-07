@@ -12,21 +12,17 @@ import com.netflix.zuul.context.RequestContext;
 import io.jsonwebtoken.Claims;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.csi.sbs.common.business.util.JwtTokenProviderUtil;
 import com.csi.sbs.gateway.constant.SysConstant;
 import com.csi.sbs.gateway.model.HeaderModel;
-import com.csi.sbs.gateway.model.PermissionModel;
-import com.csi.sbs.gateway.util.PostUtil;
 import com.netflix.zuul.ZuulFilter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-public class AuthorizedZuulFilter extends ZuulFilter {
+public class AuthorizedPreFilter extends ZuulFilter {
 
 	@Resource
 	private RestTemplate restTemplate;
@@ -34,7 +30,7 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 	private JwtTokenProviderUtil jwtToken = new JwtTokenProviderUtil("123456");
 
 	@SuppressWarnings("unused")
-	private static Logger log = LoggerFactory.getLogger(AuthorizedZuulFilter.class);
+	private static Logger log = LoggerFactory.getLogger(AuthorizedPreFilter.class);
 
 	/**
 	 * <b>Filter类型</b>
@@ -102,6 +98,7 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		String token = request.getHeader("token");
 		// 解密token
 		Claims userClaims = jwtToken.parseToken(token);
+		
 		String userID = (String) userClaims.get("developerID");
 		String countryCode = (String) userClaims.get("countryCode");
 		String clearingCode = (String) userClaims.get("clearingCode");
@@ -127,14 +124,15 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 	/**
 	 * 无权限
 	 */
+	@SuppressWarnings("unused")
 	private RequestContext noPermission(RequestContext context, HttpServletRequest request) {
 		HttpServletResponse response = context.getResponse();
 		response.setHeader("Content-Type", "application/json;charset=UTF-8");
 		context.setSendZuulResponse(false); // 终止转发，返回响应报文
 		context.setResponseStatusCode(400);
 		Map<String, String> responseMap = new HashMap<String, String>();
-		responseMap.put("errorcode", "400");
-		responseMap.put("errormsg", "请求被拦截-无权限");
+		responseMap.put("errorcode", SysConstant.ERROR_CODE3);
+		responseMap.put("errormsg", "No permissions");
 		context.setResponseBody(JSON.toJSONString(responseMap));
 		return context;
 	}
@@ -143,30 +141,15 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 	 * 登录后处理
 	 */
 	private RequestContext loginValidate(RequestContext context, HttpServletRequest request, HeaderModel header) {
-		PermissionModel permission = new PermissionModel();
-		permission.setUserID(header.getUserID());
-		permission.setCountryCode(header.getCountryCode());
-		permission.setClearingCode(header.getClearingCode());
-		permission.setBranchCode(header.getBranchCode());
-		ResponseEntity<String> result = restTemplate.postForEntity(SysConstant.PERMISSION_URL,
-				PostUtil.getRequestEntity(JSON.toJSONString(permission)), String.class);
-		JSONObject rejson = JSON.parseObject(result.getBody());
-		JSONObject rejsondata = JSON.parseObject(rejson.get("data").toString());
-		if (result.getStatusCodeValue() == 200 && rejson.get("code").equals("1")) {
-			context.addZuulRequestHeader("developerID", header.getUserID());
-			context.addZuulRequestHeader("countryCode", rejsondata.get("countryCode").toString());
-			context.addZuulRequestHeader("clearingCode", rejsondata.get("clearingCode").toString());
-			context.addZuulRequestHeader("branchCode", rejsondata.get("branchCode").toString());
-			context.addZuulRequestHeader("customerNumber", header.getCustomerNumber());
-			context.addZuulRequestHeader("loginName", header.getLoginName());
+		context.addZuulRequestHeader("developerID", header.getUserID());
+		context.addZuulRequestHeader("countryCode", header.getCountryCode());
+		context.addZuulRequestHeader("clearingCode", header.getClearingCode());
+		context.addZuulRequestHeader("branchCode", header.getBranchCode());
+		context.addZuulRequestHeader("customerNumber", header.getCustomerNumber());
+		context.addZuulRequestHeader("loginName", header.getLoginName());
 
-			context.setSendZuulResponse(true); // 将请求往后转发
-			context.setResponseStatusCode(200);
-			return context;
-		} else {
-			// 调用无权限方法
-			noPermission(context, request);
-		}
+		context.setSendZuulResponse(true); // 将请求往后转发
+		context.setResponseStatusCode(200);
 		return context;
 	}
 
@@ -179,8 +162,25 @@ public class AuthorizedZuulFilter extends ZuulFilter {
 		context.setSendZuulResponse(false); // 终止转发，返回响应报文
 		context.setResponseStatusCode(400);
 		Map<String, String> responseMap = new HashMap<String, String>();
-		responseMap.put("errorcode", "400");
-		responseMap.put("errormsg", "请求被拦截-没有登录");
+		responseMap.put("errorcode", SysConstant.ERROR_CODE2);
+		responseMap.put("errormsg", "No login");
+		context.setResponseBody(JSON.toJSONString(responseMap));
+		return context;
+	}
+	
+	
+	/**
+	 * token异常
+	 */
+	@SuppressWarnings("unused")
+	private RequestContext tokenException(RequestContext context, HttpServletRequest request) {
+		HttpServletResponse response = context.getResponse();
+		response.setHeader("Content-Type", "application/json;charset=UTF-8");
+		context.setSendZuulResponse(false); // 终止转发，返回响应报文
+		context.setResponseStatusCode(400);
+		Map<String, String> responseMap = new HashMap<String, String>();
+		responseMap.put("errorcode", SysConstant.ERROR_CODE1);
+		responseMap.put("errormsg", "token is exception,please contact administrator");
 		context.setResponseBody(JSON.toJSONString(responseMap));
 		return context;
 	}

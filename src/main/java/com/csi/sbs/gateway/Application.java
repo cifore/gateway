@@ -18,9 +18,19 @@ public class Application {
 	
 	
 	@Bean
-	public AuthorizedZuulFilter sessionPreFilter() {
-		return new AuthorizedZuulFilter();
+	public AuthorizedPreFilter preFilter() {
+		return new AuthorizedPreFilter();
 	}
+	
+//	@Bean
+//	public AuthorizedErrorFilter errorFilter() {
+//		return new AuthorizedErrorFilter();
+//	}
+	
+//	@Bean
+//	public AuthorizedPostFilter postFilter() {
+//		return new AuthorizedPostFilter();
+//	}
 	
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
