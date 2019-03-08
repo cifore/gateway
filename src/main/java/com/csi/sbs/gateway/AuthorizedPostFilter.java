@@ -28,17 +28,17 @@ public class AuthorizedPostFilter extends ZuulFilter {
 		HttpServletResponse response = context.getResponse();
 		ResultUtil result = new ResultUtil();
 		String code = (String) context.get("code");
-		String msg = (String) context.get("msg");
+		String error = (String) context.get("msg");
 		//token异常
 		if(code!=null && code.equals(SysConstant.ERROR_CODE1)){
 			result.setCode(code);
-			result.setMsg(msg);
+			result.setMsg(error);
 			
 			context.setResponseBody(JSON.toJSONString(result));
-			context.setSendZuulResponse(false); // 将请求往后转发
+			context.setSendZuulResponse(true); // 将请求往后转发
 			context.setResponseStatusCode(Integer.parseInt(code));
 			
-			throw new GatewayException(Integer.parseInt(code),msg);
+			throw new GatewayException(Integer.parseInt(code),error);
 		}
 		context.setSendZuulResponse(true); // 将请求往后转发
 		context.setResponseStatusCode(response.getStatus());

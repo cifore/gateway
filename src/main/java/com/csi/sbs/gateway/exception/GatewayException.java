@@ -13,5 +13,10 @@ public class GatewayException extends ZuulException {
 	public GatewayException(int code, String message) {
 		super(message, code, message);
 	}
+	
+//	public GatewayException(String message, int code)
+//    {
+//        super(message, code, message);
+//    }
 
 }

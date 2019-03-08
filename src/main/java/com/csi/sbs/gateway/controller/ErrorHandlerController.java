@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSON;
 import com.csi.sbs.gateway.constant.SysConstant;
+import com.csi.sbs.gateway.exception.GatewayException;
 import com.csi.sbs.gateway.util.ResultUtil;
 
 
@@ -27,14 +27,12 @@ public class ErrorHandlerController implements ErrorController{
 	@SuppressWarnings("rawtypes")
 	@RequestMapping("/error")
 	@ResponseBody
-    public String error(HttpServletRequest request,HttpServletResponse response) {
+    public String error(HttpServletRequest request,HttpServletResponse response) throws NumberFormatException, GatewayException {
 		ResultUtil result = new ResultUtil();
 		result.setCode(SysConstant.ERROR_CODE1);
 		result.setMsg("token is exception,please contact administrator");
 		
-		response.setHeader("Access-Control-Allow-Origin:", "*");
-		
-        return JSON.toJSONString(result);
+		throw new GatewayException(Integer.parseInt(SysConstant.ERROR_CODE1),"token is exception,please contact administrator");
     }
 
 
