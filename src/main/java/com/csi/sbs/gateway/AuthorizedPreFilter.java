@@ -14,6 +14,8 @@ import io.jsonwebtoken.Claims;
 import com.alibaba.fastjson.JSON;
 import com.csi.sbs.common.business.util.JwtTokenProviderUtil;
 import com.csi.sbs.gateway.constant.SysConstant;
+import com.csi.sbs.gateway.exception.AuthorizedException;
+import com.csi.sbs.gateway.exception.GatewayException;
 import com.csi.sbs.gateway.model.HeaderModel;
 import com.netflix.zuul.ZuulFilter;
 
@@ -65,7 +67,7 @@ public class AuthorizedPreFilter extends ZuulFilter {
 	}
 
 	@Override
-	public RequestContext run() {
+	public RequestContext run() throws GatewayException, AuthorizedException {
 		// 获取当前请求上下文
 		RequestContext context = RequestContext.getCurrentContext();
 		// 获取原始Http请求
@@ -105,6 +107,14 @@ public class AuthorizedPreFilter extends ZuulFilter {
 		String branchCode = (String) userClaims.get("branchCode");
 		String customerNumber = (String) userClaims.get("customerNumber");
 		String loginName = (String) userClaims.get("loginName");
+		
+		//拿到clientid
+		//String clientid =request.getHeader("clientid");
+		//将clientid 和 解密的比对
+//		if(!clientid.equals(loginName)){
+//			context.addZuulRequestHeader("code", String.valueOf(SysConstant.ERROR_CODE403002));
+//			throw new AuthorizedException(SysConstant.ERROR_CODE403002,"No permissions");
+//		}
 
 		HeaderModel header = new HeaderModel();
 		header.setCountryCode(countryCode);
@@ -131,7 +141,7 @@ public class AuthorizedPreFilter extends ZuulFilter {
 		context.setSendZuulResponse(false); // 终止转发，返回响应报文
 		context.setResponseStatusCode(400);
 		Map<String, String> responseMap = new HashMap<String, String>();
-		responseMap.put("errorcode", SysConstant.ERROR_CODE3);
+		responseMap.put("errorcode", String.valueOf(SysConstant.ERROR_CODE403002));
 		responseMap.put("errormsg", "No permissions");
 		context.setResponseBody(JSON.toJSONString(responseMap));
 		return context;
@@ -162,27 +172,11 @@ public class AuthorizedPreFilter extends ZuulFilter {
 		context.setSendZuulResponse(false); // 终止转发，返回响应报文
 		context.setResponseStatusCode(400);
 		Map<String, String> responseMap = new HashMap<String, String>();
-		responseMap.put("errorcode", SysConstant.ERROR_CODE2);
+		responseMap.put("errorcode", String.valueOf(SysConstant.ERROR_CODE403003));
 		responseMap.put("errormsg", "No login");
 		context.setResponseBody(JSON.toJSONString(responseMap));
 		return context;
 	}
 	
-	
-	/**
-	 * token异常
-	 */
-	@SuppressWarnings("unused")
-	private RequestContext tokenException(RequestContext context, HttpServletRequest request) {
-		HttpServletResponse response = context.getResponse();
-		response.setHeader("Content-Type", "application/json;charset=UTF-8");
-		context.setSendZuulResponse(false); // 终止转发，返回响应报文
-		context.setResponseStatusCode(400);
-		Map<String, String> responseMap = new HashMap<String, String>();
-		responseMap.put("errorcode", SysConstant.ERROR_CODE1);
-		responseMap.put("errormsg", "token is exception,please contact administrator");
-		context.setResponseBody(JSON.toJSONString(responseMap));
-		return context;
-	}
 
 }

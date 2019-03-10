@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.csi.sbs.gateway.constant.SysConstant;
 import com.csi.sbs.gateway.exception.GatewayException;
-import com.csi.sbs.gateway.util.ResultUtil;
 
 
 @CrossOrigin // 解决跨域请求
@@ -24,15 +23,11 @@ public class ErrorHandlerController implements ErrorController{
 		return null;
 	}
 	
-	@SuppressWarnings("rawtypes")
+	
 	@RequestMapping("/error")
 	@ResponseBody
     public String error(HttpServletRequest request,HttpServletResponse response) throws NumberFormatException, GatewayException {
-		ResultUtil result = new ResultUtil();
-		result.setCode(SysConstant.ERROR_CODE1);
-		result.setMsg("token is exception,please contact administrator");
-		
-		throw new GatewayException(Integer.parseInt(SysConstant.ERROR_CODE1),"token is exception,please contact administrator");
+		throw new GatewayException(SysConstant.ERROR_CODE403001,"token is exception,please contact administrator");
     }
 
 

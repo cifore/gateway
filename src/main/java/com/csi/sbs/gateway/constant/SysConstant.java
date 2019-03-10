@@ -48,7 +48,7 @@ public class SysConstant {
 		   list.add("/deposit/deposit/rate/upateAmountRange");
 		   list.add("/deposit/deposit/rate/deleteAmountRange");
 		   list.add("/deposit/deposit/rate/getAmountRangeInfoById");
-		   list.add("/deposit/deposit/account/customerCreation");
+		   //list.add("/deposit/deposit/account/customerCreation");
 		   
 		   list.add("/creditcard/creditcard/creditCardNumberValidation");
 		   
@@ -82,7 +82,7 @@ public class SysConstant {
 	   /**
         * 错误码
         */
-       public static final String ERROR_CODE1 = "403";//token 异常
-       public static final String ERROR_CODE2 = "0x00000003";//未登录
-       public static final String ERROR_CODE3 = "0x00000004";//没有权限
+       public static final int ERROR_CODE403001 = 403001;//token 异常
+       public static final int ERROR_CODE403002 = 403002;//没有权限
+       public static final int ERROR_CODE403003 = 403003;//没有登录
 }

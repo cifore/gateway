@@ -20,8 +20,15 @@ public class GlobalExceptionUtil {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public Result handleResourceGateException(GatewayException e)
     {
-        //logger.error(e.getMessage(), e);
-        return new Result(e.getMessage(), 40301);
+        return new Result(e.getMessage(), e.nStatusCode);
+    }
+    
+    @ExceptionHandler(value = AuthorizedException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Result handleResourceAuthorException(AuthorizedException e)
+    {
+        return new Result(e.getMessage(), e.nStatusCode);
     }
 	
 }

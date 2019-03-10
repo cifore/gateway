@@ -19,10 +19,8 @@ public class AuthorizedErrorFilter extends ZuulFilter {
 	@Override
 	public Object run() throws ZuulException {
 		RequestContext context = RequestContext.getCurrentContext();
-		
-        context.set("code", SysConstant.ERROR_CODE1);
-        context.set("error", "token is exception,please contact administrator");
-        
+        context.set("code", String.valueOf(SysConstant.ERROR_CODE403001));
+        context.set("error", "token exception,please contact administrator");
         return null;
 	}
 
