@@ -17,7 +17,7 @@ public class SysConstant {
 		   list.add("/sysadmin/sysadmin/branch/getClearingCodeByCountryCode");
 		   list.add("/sysadmin/sysadmin/branch/getBrancoByCC");
 		   list.add("/sysadmin/sysadmin/permission/userAuthorize");
-		   list.add("/sysadmin/sysadmin/login/login");
+		   list.add("/sysadmin/sysadmin/login/loginIn");
 		   
 		   list.add("/sysadmin/sysadmin/currency/getCurrencys");
 		   list.add("/sysadmin/sysadmin/queryApiList");
