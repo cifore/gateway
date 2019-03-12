@@ -27,7 +27,7 @@ public class ErrorHandlerController implements ErrorController{
 	@RequestMapping("/error")
 	@ResponseBody
     public String error(HttpServletRequest request,HttpServletResponse response) throws NumberFormatException, GatewayException {
-		throw new GatewayException(SysConstant.ERROR_CODE403001,"token is exception,please contact administrator");
+		throw new GatewayException(SysConstant.ERROR_CODE403001,"token exception,please contact administrator");
     }
 
 
