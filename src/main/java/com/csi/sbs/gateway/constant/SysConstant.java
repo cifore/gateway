@@ -50,16 +50,14 @@ public class SysConstant {
 		   list.add("/deposit/deposit/rate/getAmountRangeInfoById");
 		   //list.add("/deposit/deposit/account/customerCreation");
 		   
-		   list.add("/creditcard/creditcard/creditCardNumberValidation");
-		   
 		   list.add("/creditcard/creditcard/creditCardNumberCreation");
-		   list.add("/creditcard/creditcard/creditCardNumberValidation");
-		   list.add("/creditcard/creditcard/merchant/historyQuery");
-		   list.add("/creditcard/creditcard/merchant/getMerchants");
-		   list.add("/creditcard/creditcard/merchant/queryMerchantById");
-		   list.add("/creditcard/creditcard/merchant/insertMerchant");
-		   list.add("/creditcard/creditcard/merchant/updateMerchant");
-		   list.add("/creditcard/creditcard/merchant/deleteMerchant");
+		   list.add("/creditcard/creditcard/numberValidation");
+		   list.add("/creditcard/merchant/historyQuery");
+		   list.add("/creditcard/merchant/getMerchants");
+		   list.add("/creditcard/merchant/queryMerchantById");
+		   list.add("/creditcard/merchant/insertMerchant");
+		   list.add("/creditcard/merchant/updateMerchant");
+		   list.add("/creditcard/merchant/deleteMerchant");
 		   
 		   return list;
 	   }
@@ -72,8 +70,8 @@ public class SysConstant {
 		   
 		   list.add("/deposit/deposit/rate/getAllAmountRangeList");
 		   
-		   list.add("/creditcard/creditcard/merchant/merchantEnquiry");
-		   list.add("/creditcard/creditcard/merchant/merchantPayment");
+		   list.add("/creditcard/merchant/merchantEnquiry");
+		   list.add("/creditcard/merchant/merchantPayment");
 		   
 		   return list;
 	   }
