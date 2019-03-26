@@ -59,6 +59,10 @@ public class SysConstant {
 		   list.add("/creditcard/merchant/updateMerchant");
 		   list.add("/creditcard/merchant/deleteMerchant");
 		   
+//		   list.add("/deposit/swagger-ui.html");
+//		   list.add("/creditcard/swagger-ui.html");
+//		   list.add("/sysadmin/swagger-ui.html");
+		   
 		   return list;
 	   }
 	   //不需要登录的URL(URL带参数)
