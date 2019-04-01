@@ -52,12 +52,15 @@ public class SysConstant {
 		   
 		   list.add("/creditcard/creditcard/creditCardNumberCreation");
 		   list.add("/creditcard/creditcard/numberValidation");
+		   list.add("/creditcard/creditcard/resetData");
 		   list.add("/creditcard/merchant/historyQuery");
 		   list.add("/creditcard/merchant/getMerchants");
 		   list.add("/creditcard/merchant/queryMerchantById");
 		   list.add("/creditcard/merchant/insertMerchant");
 		   list.add("/creditcard/merchant/updateMerchant");
 		   list.add("/creditcard/merchant/deleteMerchant");
+
+		   list.add("/creditcard/point/productEnquiry");
 		   
 //		   list.add("/deposit/swagger-ui.html");
 //		   list.add("/creditcard/swagger-ui.html");
