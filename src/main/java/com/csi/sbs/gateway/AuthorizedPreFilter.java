@@ -90,7 +90,7 @@ public class AuthorizedPreFilter extends ZuulFilter {
 		}
 		// 忽略不需要登录的请求(Url 带参数)
 		for (int i = 0; i < SysConstant.getNoNeedLoginTwo().size(); i++) {
-			if (SysConstant.getNoNeedLoginTwo().get(i).indexOf(path) != -1) {
+			if (path.indexOf(SysConstant.getNoNeedLoginTwo().get(i))!=-1) {
 				context.setSendZuulResponse(true); // 将请求往后转发
 				context.setResponseStatusCode(200);
 				return context;

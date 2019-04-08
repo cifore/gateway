@@ -19,6 +19,7 @@ public class SysConstant {
 		   list.add("/sysadmin/sysadmin/permission/userAuthorize");
 		   list.add("/sysadmin/sysadmin/login/loginIn");
 		   
+		   
 		   list.add("/sysadmin/sysadmin/currency/getCurrencys");
 		   list.add("/sysadmin/sysadmin/queryApiList");
 		   list.add("/sysadmin/sysadmin/testApiSend");
@@ -74,6 +75,7 @@ public class SysConstant {
 		   list.add("/sysadmin/sysadmin/getApiInfo");
 		   list.add("/sysadmin/sysadmin/trantype/queryTranType");
 		   list.add("/sysadmin/sysadmin/getUserInfo");
+		   list.add("/sysadmin/sysadmin/login/authorize");
 		   
 		   list.add("/deposit/deposit/rate/getAllAmountRangeList");
 		   
