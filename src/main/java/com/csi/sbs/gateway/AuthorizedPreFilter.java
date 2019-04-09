@@ -107,6 +107,7 @@ public class AuthorizedPreFilter extends ZuulFilter {
 		String branchCode = (String) userClaims.get("branchCode");
 		String customerNumber = (String) userClaims.get("customerNumber");
 		String loginName = (String) userClaims.get("loginName");
+		String sandBoxId = (String) userClaims.get("sandBoxId");
 		
 		//拿到clientid
 		//String clientid =request.getHeader("clientid");
@@ -123,6 +124,7 @@ public class AuthorizedPreFilter extends ZuulFilter {
 		header.setUserID(userID);
 		header.setLoginName(loginName);
 		header.setCustomerNumber(customerNumber);
+		header.setSandBoxId(sandBoxId);
 		// 校验是否登录
 		if (StringUtils.isEmpty(token)) {
 			// 调用未登录方法
@@ -157,6 +159,7 @@ public class AuthorizedPreFilter extends ZuulFilter {
 		context.addZuulRequestHeader("branchCode", header.getBranchCode());
 		context.addZuulRequestHeader("customerNumber", header.getCustomerNumber());
 		context.addZuulRequestHeader("loginName", header.getLoginName());
+		context.addZuulRequestHeader("sandBoxId", header.getSandBoxId());
 
 		context.setSendZuulResponse(true); // 将请求往后转发
 		context.setResponseStatusCode(200);

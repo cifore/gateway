@@ -14,9 +14,19 @@ public class HeaderModel {
 	
 	private String loginName;
 	
+	private String sandBoxId;
 	
 	
 	
+	
+
+	public String getSandBoxId() {
+		return sandBoxId;
+	}
+
+	public void setSandBoxId(String sandBoxId) {
+		this.sandBoxId = sandBoxId;
+	}
 
 	public String getCustomerNumber() {
 		return customerNumber;
