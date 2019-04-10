@@ -50,7 +50,7 @@ public class SysConstant {
 		   list.add("/deposit/deposit/rate/upateAmountRange");
 		   list.add("/deposit/deposit/rate/deleteAmountRange");
 		   list.add("/deposit/deposit/rate/getAmountRangeInfoById");
-		   list.add("/deposit/deposit/account/customerCreation");
+		   //list.add("/deposit/deposit/account/customerCreation");
 		   
 		   list.add("/creditcard/creditcard/creditCardNumberCreation");
 		   list.add("/creditcard/creditcard/numberValidation");
