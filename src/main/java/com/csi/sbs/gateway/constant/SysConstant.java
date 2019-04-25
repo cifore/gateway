@@ -19,6 +19,9 @@ public class SysConstant {
 		   list.add("/sysadmin/sysadmin/permission/developerAuthorization");
 		   list.add("/sysadmin/sysadmin/login/loginIn");
 		   list.add("/sysadmin/sysadmin/login/userCreation");
+		   list.add("/sysadmin/sysadmin/sandbox/getSandBoxTableInfo");
+		   list.add("/sysadmin/sysadmin/sandbox/getSandBoxTable");
+		   
 		   
 		   
 		   list.add("/sysadmin/sysadmin/currency/getCurrencys");
@@ -50,9 +53,14 @@ public class SysConstant {
 		   list.add("/deposit/deposit/rate/upateAmountRange");
 		   list.add("/deposit/deposit/rate/deleteAmountRange");
 		   list.add("/deposit/deposit/rate/getAmountRangeInfoById");
+		   list.add("/deposit/deposit/account/sandboxSearch");
 		   //list.add("/deposit/deposit/account/customerCreation");
 		   
+		   list.add("/investment/investment/datehandle/sandboxSearch");
+		   
+		   
 		   list.add("/creditcard/creditcard/creditCardNumberCreation");
+		   list.add("/creditcard/creditcard/sandboxSearch");
 		   list.add("/creditcard/creditcard/numberValidation");
 		   list.add("/creditcard/creditcard/resetData");
 		   list.add("/creditcard/merchant/historyQuery");
