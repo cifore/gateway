@@ -12,11 +12,11 @@ import com.netflix.zuul.context.RequestContext;
 import io.jsonwebtoken.Claims;
 
 import com.alibaba.fastjson.JSON;
+import com.csi.sbs.common.business.model.HeaderModel;
 import com.csi.sbs.common.business.util.JwtTokenProviderUtil;
 import com.csi.sbs.gateway.constant.SysConstant;
 import com.csi.sbs.gateway.exception.AuthorizedException;
 import com.csi.sbs.gateway.exception.GatewayException;
-import com.csi.sbs.gateway.model.HeaderModel;
 import com.netflix.zuul.ZuulFilter;
 
 import org.slf4j.Logger;
@@ -108,6 +108,7 @@ public class AuthorizedPreFilter extends ZuulFilter {
 		String customerNumber = (String) userClaims.get("customerNumber");
 		String loginName = (String) userClaims.get("loginName");
 		String sandBoxId = (String) userClaims.get("sandBoxId");
+		String dockerId = (String) userClaims.get("dockerId");
 		
 		//拿到clientid
 		//String clientid =request.getHeader("clientid");
@@ -125,6 +126,7 @@ public class AuthorizedPreFilter extends ZuulFilter {
 		header.setLoginName(loginName);
 		header.setCustomerNumber(customerNumber);
 		header.setSandBoxId(sandBoxId);
+		header.setDockerId(dockerId);
 		// 校验是否登录
 		if (StringUtils.isEmpty(token)) {
 			// 调用未登录方法
@@ -160,6 +162,7 @@ public class AuthorizedPreFilter extends ZuulFilter {
 		context.addZuulRequestHeader("customerNumber", header.getCustomerNumber());
 		context.addZuulRequestHeader("loginName", header.getLoginName());
 		context.addZuulRequestHeader("sandBoxId", header.getSandBoxId());
+		context.addZuulRequestHeader("dockerId", header.getDockerId());
 
 		context.setSendZuulResponse(true); // 将请求往后转发
 		context.setResponseStatusCode(200);
