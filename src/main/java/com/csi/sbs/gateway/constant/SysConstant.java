@@ -58,6 +58,8 @@ public class SysConstant {
 		   
 		   list.add("/investment/investment/datehandle/sandboxSearch");
 		   
+		   list.add("/loan/mortgage/loanCalculater");
+		   
 		   
 		   list.add("/creditcard/creditcard/creditCardNumberCreation");
 		   list.add("/creditcard/creditcard/sandboxSearch");
