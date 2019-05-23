@@ -21,6 +21,10 @@ public class SysConstant {
 		   list.add("/sysadmin/sysadmin/login/userCreation");
 		   list.add("/sysadmin/sysadmin/sandbox/getSandBoxTableInfo");
 		   list.add("/sysadmin/sysadmin/sandbox/getSandBoxTable");
+		   list.add("/sysadmin/sysadmin/permission/appSandBoxForDeveloper");
+		   list.add("/sysadmin/sysadmin/permission/appDockerForDeveloper");
+		   list.add("/sysadmin/sysadmin/branchdata/getBranchCodeTable");
+		   list.add("/sysadmin/sysadmin/branchdata/getBranchCodeTableInfo");
 		   
 		   
 		   
