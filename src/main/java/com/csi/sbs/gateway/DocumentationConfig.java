@@ -24,12 +24,11 @@
 //    @SuppressWarnings({ })
 //	@Override
 //    public List<SwaggerResource> get() {
-//    	List<SwaggerResource> resources = new ArrayList<>();
-//        List<Route> routes = routeLocator.getRoutes();
-//        routes.forEach(route -> {
-//            resources.add(swaggerResource(route.getId(), route.getFullPath().replace("**", "swagger-ui.html"), "1.0"));
-//        });
-//        return resources;
+//    	 @SuppressWarnings("rawtypes")
+//		List resources = new ArrayList<>();
+//         resources.add(swaggerResource("Hello接口", "/swagger.json", "1.0"));
+//         resources.add(swaggerResource("检查系统接口", "/swagger.json", "1.0"));
+//         return resources;
 //    }
 //
 //     private SwaggerResource swaggerResource(String name, String location, String version) {

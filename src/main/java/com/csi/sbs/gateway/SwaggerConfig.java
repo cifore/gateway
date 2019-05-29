@@ -23,9 +23,9 @@
 //    @SuppressWarnings("deprecation")
 //	private ApiInfo apiInfo() {
 //        return new ApiInfoBuilder()
-//                .title("SBS")
-//                .description("SBS接口文档说明")
-//                .termsOfServiceUrl("http://localhost:8089")
+//                .title("LBS")
+//                .description("LBS接口文档说明")
+//                .termsOfServiceUrl("http://localhost:8086")
 //                .contact("Pim li:lihuacheng@chinasofti.com")
 //                .version("1.0")
 //                .build();

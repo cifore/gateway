@@ -78,7 +78,7 @@ public class SysConstant {
 		   
 //		   list.add("/deposit/swagger-ui.html");
 //		   list.add("/creditcard/swagger-ui.html");
-//		   list.add("/sysadmin/swagger-ui.html");
+//		   list.add("swagger.json");
 		   
 		   return list;
 	   }
