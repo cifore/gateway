@@ -58,7 +58,7 @@ public class SysConstant {
 		   list.add("/deposit/deposit/rate/deleteAmountRange");
 		   list.add("/deposit/deposit/rate/getAmountRangeInfoById");
 		   list.add("/deposit/deposit/account/sandboxSearch");
-//		   list.add("/deposit/deposit/account/customerCreation");
+		   list.add("/deposit/deposit/account/customerCreation");
 		   
 		   list.add("/investment/investment/datehandle/sandboxSearch");
 		   
