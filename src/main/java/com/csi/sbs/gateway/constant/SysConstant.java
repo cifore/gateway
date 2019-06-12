@@ -59,6 +59,18 @@ public class SysConstant {
 		   list.add("/deposit/deposit/rate/getAmountRangeInfoById");
 		   list.add("/deposit/deposit/account/sandboxSearch");
 		   list.add("/deposit/deposit/account/customerCreation");
+		   list.add("/deposit/deposit/validate/checkCurAccountType");
+		   list.add("/deposit/deposit/validate/checkFexAccountType");
+		   list.add("/deposit/deposit/validate/checktdAccountType");
+		   list.add("/deposit/deposit/validate/checkmetAccountType");
+		   list.add("/deposit/deposit/validate/checkfundAccountType");
+		   list.add("/deposit/deposit/validate/checkmortgageloanAccountType");
+		   list.add("/deposit/deposit/validate/checkSavOrCurType");
+		   
+		   
+		   list.add("/deposit/deposit/validate/checkCurAccountType");
+		   list.add("/deposit/deposit/validate/dateRangeValidate");
+		   
 		   
 		   list.add("/investment/investment/datehandle/sandboxSearch");
 		   
@@ -78,6 +90,7 @@ public class SysConstant {
 		   list.add("/creditcard/merchant/deleteMerchant");
 
 		   list.add("/creditcard/point/productEnquiry");
+		   list.add("/creditcard/validate/validateMerchantCategory");
 		   
 //		   list.add("/deposit/swagger-ui.html");
 //		   list.add("/creditcard/swagger-ui.html");
@@ -94,9 +107,19 @@ public class SysConstant {
 		   list.add("/sysadmin/sysadmin/login/authorize");
 		   
 		   list.add("/deposit/deposit/rate/getAllAmountRangeList");
+		   list.add("/deposit/deposit/validate/validateTDNumberExists");
+		   list.add("/deposit/deposit/validate/validateDateFormat");
+		   list.add("/deposit/deposit/validate/validateTimeFormat");
+		   list.add("/deposit/deposit/validate/validateTransType");
+		   list.add("/deposit/deposit/validate/validateCustomerID");
+		   list.add("/deposit/deposit/validate/validateEmailFormat");
+		   list.add("/deposit/deposit/validate/validatePhoneNumberFormat");
+		   list.add("/deposit/deposit/validate/validateCurrency");
+		   list.add("/deposit/deposit/validate/validateContractPeriod");
 		   
 		   list.add("/creditcard/merchant/merchantEnquiry");
 		   list.add("/creditcard/merchant/merchantPayment");
+		   list.add("/creditcard/validate/validatenumber");
 		   
 		   return list;
 	   }
