@@ -59,17 +59,19 @@ public class SysConstant {
 		   list.add("/deposit/deposit/rate/getAmountRangeInfoById");
 		   list.add("/deposit/deposit/account/sandboxSearch");
 		   list.add("/deposit/deposit/account/customerCreation");
-		   list.add("/deposit/deposit/validate/checkCurAccountType");
-		   list.add("/deposit/deposit/validate/checkFexAccountType");
-		   list.add("/deposit/deposit/validate/checktdAccountType");
-		   list.add("/deposit/deposit/validate/checkmetAccountType");
-		   list.add("/deposit/deposit/validate/checkfundAccountType");
-		   list.add("/deposit/deposit/validate/checkmortgageloanAccountType");
-		   list.add("/deposit/deposit/validate/checkSavOrCurType");
+		   list.add("/deposit/deposit/validate/curAccountType");
+		   list.add("/deposit/deposit/validate/fexAccountType");
+		   list.add("/deposit/deposit/validate/fundAccountType");
+		   list.add("/deposit/deposit/validate/metAccountType");
+		   list.add("/deposit/deposit/validate/savOrCurType");
+		   list.add("/deposit/deposit/validate/stockAccountType");
+		   list.add("/deposit/deposit/validate/tdAccountType");
 		   
 		   
-		   list.add("/deposit/deposit/validate/checkCurAccountType");
-		   list.add("/deposit/deposit/validate/dateRangeValidate");
+		   list.add("/deposit/deposit/validate/AmountFormat");
+		   list.add("/deposit/deposit/validate/dateRange");
+		   list.add("/creditcard/validate/merchantCategory");
+		   
 		   
 		   
 		   list.add("/investment/investment/datehandle/sandboxSearch");
@@ -107,19 +109,21 @@ public class SysConstant {
 		   list.add("/sysadmin/sysadmin/login/authorize");
 		   
 		   list.add("/deposit/deposit/rate/getAllAmountRangeList");
-		   list.add("/deposit/deposit/validate/validateTDNumberExists");
-		   list.add("/deposit/deposit/validate/validateDateFormat");
-		   list.add("/deposit/deposit/validate/validateTimeFormat");
-		   list.add("/deposit/deposit/validate/validateTransType");
-		   list.add("/deposit/deposit/validate/validateCustomerID");
-		   list.add("/deposit/deposit/validate/validateEmailFormat");
-		   list.add("/deposit/deposit/validate/validatePhoneNumberFormat");
-		   list.add("/deposit/deposit/validate/validateCurrency");
-		   list.add("/deposit/deposit/validate/validateContractPeriod");
+		   list.add("/deposit/deposit/validate/currency");
+		   list.add("/deposit/deposit/validate/idFormat");
+		   list.add("/deposit/deposit/validate/emailFormat");
+		   list.add("/deposit/deposit/validate/phoneNumberFormat");
+		   list.add("/deposit/deposit/validate/contractPeriod");
+		   list.add("/deposit/deposit/validate/dateFormat");
+		   list.add("/deposit/deposit/validate/timeFormat");
+		   list.add("/deposit/deposit/validate/transType");
+		   
+		   list.add("/investment/investment/fund/fundQuotation");
+		   list.add("/investment/investment/stock/stockQuotation");
 		   
 		   list.add("/creditcard/merchant/merchantEnquiry");
 		   list.add("/creditcard/merchant/merchantPayment");
-		   list.add("/creditcard/validate/validatenumber");
+		   list.add("/creditcard/validate/number");
 		   
 		   return list;
 	   }
