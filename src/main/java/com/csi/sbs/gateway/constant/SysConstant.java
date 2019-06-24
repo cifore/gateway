@@ -66,6 +66,7 @@ public class SysConstant {
 		   list.add("/deposit/deposit/validate/savOrCurType");
 		   list.add("/deposit/deposit/validate/stockAccountType");
 		   list.add("/deposit/deposit/validate/tdAccountType");
+		   list.add("/deposit/deposit/validate/emailFormat");
 		   
 		   
 		   list.add("/deposit/deposit/validate/AmountFormat");
@@ -112,7 +113,6 @@ public class SysConstant {
 		   list.add("/deposit/deposit/rate/getAllAmountRangeList");
 		   list.add("/deposit/deposit/validate/currency");
 		   list.add("/deposit/deposit/validate/idFormat");
-		   list.add("/deposit/deposit/validate/emailFormat");
 		   list.add("/deposit/deposit/validate/phoneNumberFormat");
 		   list.add("/deposit/deposit/validate/contractPeriod");
 		   list.add("/deposit/deposit/validate/dateFormat");
