@@ -26,9 +26,14 @@ public class SysConstant {
 		   list.add("/sysadmin/sysadmin/branchdata/getBranchCodeTable");
 		   list.add("/sysadmin/sysadmin/branchdata/getBranchCodeTableInfo");
 		   
+		   list.add("/sysadmin/sysadmin/module/queryModuleList");
+		   list.add("/sysadmin/sysadmin/module/selectById");
+		   list.add("/sysadmin/sysadmin/module/insert");
+		   list.add("/sysadmin/sysadmin/module/update");
+		   list.add("/sysadmin/sysadmin/module/delete");
 		   
 		   
-		   list.add("/sysadmin/sysadmin/currency/getCurrencys");
+		   list.add("/sysadmin/sysadmin/currency/currencyRetrieval");
 		   list.add("/sysadmin/sysadmin/queryApiList");
 		   list.add("/sysadmin/sysadmin/testApiSend");
 		   list.add("/sysadmin/sysadmin/getServiceInternalURL");
@@ -90,9 +95,11 @@ public class SysConstant {
 		   list.add("/creditcard/merchant/insertMerchant");
 		   list.add("/creditcard/merchant/updateMerchant");
 		   list.add("/creditcard/merchant/deleteMerchant");
+		   
 
 		   list.add("/creditcard/point/productEnquiry");
 		   list.add("/creditcard/validate/validateMerchantCategory");
+		   list.add("/creditcard/validate/number");
 		   
 //		   list.add("/deposit/swagger-ui.html");
 //		   list.add("/creditcard/swagger-ui.html");
@@ -123,7 +130,7 @@ public class SysConstant {
 		   
 		   list.add("/creditcard/merchant/merchantEnquiry");
 		   list.add("/creditcard/merchant/merchantPayment");
-		   list.add("/creditcard/validate/number");
+		   
 		   
 		   return list;
 	   }
