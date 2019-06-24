@@ -31,6 +31,7 @@ public class SysConstant {
 		   list.add("/sysadmin/sysadmin/module/insert");
 		   list.add("/sysadmin/sysadmin/module/update");
 		   list.add("/sysadmin/sysadmin/module/delete");
+		   list.add("/sysadmin/sysadmin/initHoliday");
 		   
 		   
 		   list.add("/sysadmin/sysadmin/currency/currencyRetrieval");
@@ -114,6 +115,7 @@ public class SysConstant {
 		   list.add("/sysadmin/sysadmin/trantype/queryTranType");
 		   list.add("/sysadmin/sysadmin/getUserInfo");
 		   list.add("/sysadmin/sysadmin/login/authorize");
+		   list.add("/sysadmin/sysadmin/isHoliday");
 		   
 		   list.add("/deposit/deposit/rate/getAllAmountRangeList");
 		   list.add("/deposit/deposit/validate/currency");
