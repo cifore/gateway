@@ -25,15 +25,12 @@ public class SysConstant {
 		   list.add("/sysadmin/sysadmin/permission/appDockerForDeveloper");
 		   list.add("/sysadmin/sysadmin/branchdata/getBranchCodeTable");
 		   list.add("/sysadmin/sysadmin/branchdata/getBranchCodeTableInfo");
-		   
 		   list.add("/sysadmin/sysadmin/module/queryModuleList");
 		   list.add("/sysadmin/sysadmin/module/selectById");
 		   list.add("/sysadmin/sysadmin/module/insert");
 		   list.add("/sysadmin/sysadmin/module/update");
 		   list.add("/sysadmin/sysadmin/module/delete");
 		   list.add("/sysadmin/sysadmin/initHoliday");
-		   
-		   
 		   list.add("/sysadmin/sysadmin/currency/currencyRetrieval");
 		   list.add("/sysadmin/sysadmin/queryApiList");
 		   list.add("/sysadmin/sysadmin/testApiSend");
@@ -51,7 +48,6 @@ public class SysConstant {
 		   list.add("/sysadmin/sysadmin/branch/addBranch");
 		   
 		   list.add("/deposit/deposit/account/accountNumberValidation");
-		   
 		   list.add("/deposit/deposit/rate/getAllTdRateList");
 		   list.add("/deposit/deposit/rate/getPeirodList");
 		   list.add("/deposit/deposit/rate/updateTdRate");
@@ -73,20 +69,16 @@ public class SysConstant {
 		   list.add("/deposit/deposit/validate/stockAccountType");
 		   list.add("/deposit/deposit/validate/tdAccountType");
 		   list.add("/deposit/deposit/validate/emailFormat");
-		   
-		   
 		   list.add("/deposit/deposit/validate/AmountFormat");
 		   list.add("/deposit/deposit/validate/dateRange");
-		   list.add("/creditcard/validate/merchantCategory");
-		   
-		   
 		   
 		   list.add("/investment/investment/datehandle/sandboxSearch");
+		   list.add("/investment/investment/stock/stockQuotation");
 		   
 		   list.add("/loan/mortgage/loanCalculater");
 		   list.add("/loan/mortgage/resetContractDueInfo");
 		   
-		   
+		   list.add("/creditcard/validate/merchantCategory");
 		   list.add("/creditcard/creditcard/creditCardNumberCreation");
 		   list.add("/creditcard/creditcard/sandboxSearch");
 		   list.add("/creditcard/creditcard/numberValidation");
@@ -97,15 +89,9 @@ public class SysConstant {
 		   list.add("/creditcard/merchant/insertMerchant");
 		   list.add("/creditcard/merchant/updateMerchant");
 		   list.add("/creditcard/merchant/deleteMerchant");
-		   
-
 		   list.add("/creditcard/point/productEnquiry");
 		   list.add("/creditcard/validate/validateMerchantCategory");
 		   list.add("/creditcard/validate/number");
-		   
-//		   list.add("/deposit/swagger-ui.html");
-//		   list.add("/creditcard/swagger-ui.html");
-//		   list.add("swagger.json");
 		   
 		   return list;
 	   }
@@ -128,7 +114,6 @@ public class SysConstant {
 		   list.add("/deposit/deposit/validate/transType");
 		   
 		   list.add("/investment/investment/fund/fundQuotation");
-		   list.add("/investment/investment/stock/stockQuotation");
 		   
 		   list.add("/creditcard/merchant/merchantEnquiry");
 		   list.add("/creditcard/merchant/merchantPayment");
