@@ -31,7 +31,18 @@ public class SysConstant {
 		   list.add("/sysadmin/sysadmin/module/insert");
 		   list.add("/sysadmin/sysadmin/module/update");
 		   list.add("/sysadmin/sysadmin/module/delete");
+		   list.add("/sysadmin/sysadmin/module/findModule");
 		   list.add("/sysadmin/sysadmin/initHoliday");
+		   list.add("/sysadmin/sysadmin/queryHolidayList");
+		   list.add("/sysadmin/sysadmin/insertHoliday");
+		   list.add("/sysadmin/sysadmin/updateHoliday");
+		   list.add("/sysadmin/sysadmin/getHolidayInfo");
+		   list.add("/sysadmin/sysadmin/deleteHoliday");;
+		   
+		   list.add("/sysadmin/sysadmin/sysconfig/querySysConfList");
+		   list.add("/sysadmin/sysadmin/sysconfig/updateParam");
+		   list.add("/sysadmin/sysadmin/sysconfig/findItem");
+		   list.add("/sysadmin/sysadmin/sysconfig/updateParam");
 		   
 		   
 		   list.add("/sysadmin/sysadmin/currency/currencyRetrieval");
