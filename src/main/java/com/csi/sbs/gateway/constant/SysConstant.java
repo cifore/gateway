@@ -58,6 +58,9 @@ public class SysConstant {
 		   list.add("/sysadmin/sysadmin/sysconfig/getSystemParameter");
 		   list.add("/sysadmin/sysadmin/log/writeTransactionLog");
 		   list.add("/sysadmin/sysadmin/trantype/addTranType");
+		   list.add("/sysadmin/sysadmin/trantype/deleteTranType");
+		   list.add("/sysadmin/sysadmin/trantype/updateTranType");
+		   list.add("/sysadmin/sysadmin/trantype/getAll");
 		   list.add("/sysadmin/sysadmin/userbranch/addUserBranch");
 		   list.add("/sysadmin/sysadmin/branch/addBranch");
 		   
